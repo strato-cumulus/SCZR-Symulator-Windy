@@ -1,4 +1,4 @@
-package com.sczr.symulator-windy;
+package com.sczr.symulator_windy;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
