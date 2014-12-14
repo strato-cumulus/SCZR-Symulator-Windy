@@ -40,4 +40,5 @@ public class SCZRApplication extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(stage);
 	}
 	
+
 }
