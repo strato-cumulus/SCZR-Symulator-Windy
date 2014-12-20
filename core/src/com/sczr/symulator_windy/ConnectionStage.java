@@ -25,7 +25,6 @@ public class ConnectionStage extends Stage {
 	Table table;
 	Skin skin;
 	
-	
 	TextButton connectButton;
 	TextField portField;
 	

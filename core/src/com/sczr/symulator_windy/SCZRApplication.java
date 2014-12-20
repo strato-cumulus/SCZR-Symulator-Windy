@@ -3,19 +3,27 @@ package com.sczr.symulator_windy;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Scaling;
 
 public class SCZRApplication extends ApplicationAdapter {
+	public static int windowWidth, windowHeight;
 	ConnectionStage connectionStage;
 	MainStage mainStage;
 	Stage currentStage;
 	
+	public SCZRApplication(int windowWidth, int windowHeight) {
+		SCZRApplication.windowWidth = windowWidth;
+		SCZRApplication.windowHeight = windowHeight;
+	}
 	
 	@Override
 	public void create () {
 		connectionStage = new ConnectionStage(this);
 		mainStage = new MainStage();
-		setStage(connectionStage);
+		//setStage(connectionStage);
+		setMainStage(); //tu powinno byc connection stage ale na czas debugu to wylaczam bo wkurwia wpisywanie cyferek za kazdym razem
 	}
 
 	@Override
@@ -28,7 +36,13 @@ public class SCZRApplication extends ApplicationAdapter {
 	
 	@Override
 	public void resize(int width, int height){
-		currentStage.getViewport().update(width, height);
+        Vector2 size = Scaling.fit.apply(windowWidth, windowHeight, width, height);
+        int viewportX = (int)(width - size.x) / 2;
+        int viewportY = (int)(height - size.y) / 2;
+        int viewportWidth = (int)size.x;
+        int viewportHeight = (int)size.y;
+        //Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+        currentStage.getViewport().update(viewportWidth, viewportHeight);	
 	}
 	
 	public void setMainStage(){
