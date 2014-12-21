@@ -6,12 +6,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Scaling;
+import com.sczr.symulator_windy.ui.SkinAtlas;
 
 public class SCZRApplication extends ApplicationAdapter {
 	public static int windowWidth, windowHeight;
+	public SkinAtlas skinAtlas;
+	
 	ConnectionStage connectionStage;
 	MainStage mainStage;
 	Stage currentStage;
+	
 	
 	public SCZRApplication(int windowWidth, int windowHeight) {
 		SCZRApplication.windowWidth = windowWidth;
@@ -20,10 +24,12 @@ public class SCZRApplication extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		skinAtlas = new SkinAtlas();
 		connectionStage = new ConnectionStage(this);
-		mainStage = new MainStage();
-		//setStage(connectionStage);
-		setMainStage(); //tu powinno byc connection stage ale na czas debugu to wylaczam bo wkurwia wpisywanie cyferek za kazdym razem
+		mainStage = new MainStage(skinAtlas.getSkin());
+		
+		setStage(connectionStage);
+		//setMainStage(); //tu powinno byc connection stage ale na czas debugu to wylaczam bo wkurwia wpisywanie cyferek za kazdym razem
 	}
 
 	@Override
