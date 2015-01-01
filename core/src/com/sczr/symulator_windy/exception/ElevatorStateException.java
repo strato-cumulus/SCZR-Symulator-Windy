@@ -1,7 +1,7 @@
 package com.sczr.symulator_windy.exception;
 
-import com.sczr.symulator_windy.ElevatorCar.DoorState;
-import com.sczr.symulator_windy.ElevatorCar.ElevatorState;
+import com.sczr.symulator_windy.ui.ElevatorCar.DoorState;
+import com.sczr.symulator_windy.ui.ElevatorCar.ElevatorState;
 
 public class ElevatorStateException extends Exception {
 	private static final long serialVersionUID = 1L;

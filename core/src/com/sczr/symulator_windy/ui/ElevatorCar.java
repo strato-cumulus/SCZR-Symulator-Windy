@@ -1,4 +1,4 @@
-package com.sczr.symulator_windy;
+package com.sczr.symulator_windy.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
