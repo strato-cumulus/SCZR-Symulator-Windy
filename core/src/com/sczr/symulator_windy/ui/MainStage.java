@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
+import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.state.Direction;
 
 public class MainStage extends Stage {
@@ -22,6 +24,7 @@ public class MainStage extends Stage {
 	public static final int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator = new ElevatorCar(60, (int) (getHeight()/STOREY_NUM) - 30);
+	final UIModule uiModule;
 	
 	int peopleWaitingOnStorey[];
 	
@@ -60,10 +63,11 @@ public class MainStage extends Stage {
 	//Date of Edition --
 	//Power Supply: CODEGEN 800W
 	
-	public MainStage(Skin skin){	
+	public MainStage(Skin skin, UIModule uiModule){	
 		addActor(elevator);
 		storeyLabels = new Label[STOREY_NUM];	
 		peopleWaitingOnStorey = new int[STOREY_NUM];
+		this.uiModule = uiModule;
 		
 		for(int i=0; i<STOREY_NUM; i++){
 			Label label = new Label("", skin);
@@ -91,6 +95,8 @@ public class MainStage extends Stage {
 		ElevatorCallButton topFloorButton = new ElevatorCallButton("v", skin, Direction.DOWN, STOREY_NUM-1);
 		topFloorButton.setPosition(ELEVATOR_X+elevator.getElevatorWidth(), getFloorLevel(STOREY_NUM-1)+60);
 		groundFloorButton.setPosition(ELEVATOR_X+elevator.getElevatorWidth(), getFloorLevel(0)+45);
+		topFloorButton.addListener(new ElevatorButtonListener(4, Direction.DOWN));
+		groundFloorButton.addListener(new ElevatorButtonListener(0, Direction.UP));
 		
 		ArrayList<ElevatorCallButton> callButtons = new ArrayList<ElevatorCallButton>();
 		callButtons.add(groundFloorButton);
@@ -103,17 +109,11 @@ public class MainStage extends Stage {
 			down.setPosition(ELEVATOR_X+elevator.getElevatorWidth(), getFloorLevel(i)+45);
 			callButtons.add(up);
 			callButtons.add(down);
+			up.addListener(new ElevatorButtonListener(i, Direction.UP));
+			down.addListener(new ElevatorButtonListener(i, Direction.DOWN));
 		}
 		for (ElevatorCallButton elevatorCallButton : callButtons) {
-			addActor(elevatorCallButton);
-			
-			elevatorCallButton.addListener(new ChangeListener() {			
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					//TODO wysylac informacje o tym ze ktos kliknal 
-					System.out.println(((ElevatorCallButton)actor).direction + " " + ((ElevatorCallButton)(actor)).storey);
-				}
-			});		
+			addActor(elevatorCallButton);	
 		}
 		
 		
@@ -169,6 +169,23 @@ public class MainStage extends Stage {
 	//podajesz pietro i zwraca ci na jakiej wysokosci w pixelach sie znajduje
 	private int getFloorLevel(int floor){
 		return (int) (floor*getHeight()/STOREY_NUM);
+	}
+	
+	class ElevatorButtonListener extends ChangeListener 
+	{
+		private final int story;
+		private final Direction direction;
+		
+		ElevatorButtonListener(int story, Direction direction)
+		{
+			this.story = story;
+			this.direction = direction;
+		}
+		
+		public void changed(ChangeEvent e, Actor a)
+		{
+			uiModule.sendPacket(new ElevatorCallPacket(story, direction));
+		}
 	}
 }
 

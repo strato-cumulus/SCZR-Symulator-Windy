@@ -14,10 +14,5 @@ public class RandomPassengersModule extends Module
 	public RandomPassengersModule(int tcpPort) throws IOException
 	{
 		super(tcpPort);
-		this.server.addListener(new Listener() {
-			public void received(Connection c, Object o) {
-				System.out.println("Object of class " + o.getClass().getSimpleName() + " received.");
-			}
-		});
 	}
 }

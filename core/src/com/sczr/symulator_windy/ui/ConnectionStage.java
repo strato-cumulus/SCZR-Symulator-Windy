@@ -13,18 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.sczr.symulator_windy.SCZRApplication;
 
 public class ConnectionStage extends Stage {
-	SCZRApplication app;
 	ShapeRenderer shapeRenderer;
 	Table table;
 	Skin skin;
+	final UIModule uiModule;
 	
 	TextButton connectButton;
 	TextField portField;
 	
-	public ConnectionStage(SCZRApplication app) {
+	public ConnectionStage(SkinAtlas skinAtlas, UIModule uiModule) {
 		super();
-		this.app = app;
-		skin = app.skinAtlas.getSkin();
+		this.uiModule = uiModule;
+		skin = skinAtlas.getSkin();
 		shapeRenderer = new ShapeRenderer();
 		table = new Table();
 		table.setFillParent(true);		
@@ -58,15 +58,11 @@ public class ConnectionStage extends Stage {
 		        System.out.println(port);	//TODO polaczenie 
 		        
 		        //if(polaczenie==ok)
-		        app.setMainStage();
+		        uiModule.setMainStage();
 		        return true;
 		    }
 		});
-		
-		
-	}
-	
-	
+	}	
 }
 	
 	

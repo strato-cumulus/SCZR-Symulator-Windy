@@ -8,10 +8,9 @@ public class ElevatorCallButton extends TextButton{
 	public final Direction direction;
 	public final int storey;
 	
-	public ElevatorCallButton(String text, Skin skin, Direction direction, int storey) {
+	ElevatorCallButton(String text, Skin skin, Direction direction, int storey) {
 		super(text, skin);
 		this.storey = storey;
 		this.direction = direction;
 	}
-	
 }

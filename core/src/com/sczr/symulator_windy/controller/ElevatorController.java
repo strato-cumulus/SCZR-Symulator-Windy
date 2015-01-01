@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.sczr.symulator_windy.modules.Module;
+import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.Packet;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
@@ -26,6 +29,16 @@ public class ElevatorController
 		this.server.start();
 		this.server.bind(controllerTcp);
 		SerializationList.register(this.server.getKryo());
+		this.server.addListener(new Listener() {
+			public void received(Connection c, Object o) {
+				if(o instanceof ElevatorCallPacket) {
+					ElevatorCallPacket packet = (ElevatorCallPacket)o;
+					System.out.println("Received ElevatorCallPacket. Floor: " + packet.getFloor() +
+							"; direction: " + packet.getDirection().toString());
+				}
+			}
+		});
+		
 		this.controllerTcp = controllerTcp;
 		Module.CONTROLLER_TCP = controllerTcp;
 	}
