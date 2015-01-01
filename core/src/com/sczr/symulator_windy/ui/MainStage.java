@@ -1,4 +1,4 @@
-package com.sczr.symulator_windy;
+package com.sczr.symulator_windy.ui;
 
 import java.util.ArrayList;
 
@@ -15,8 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
-import com.sczr.symulator_windy.ui.ElevatorCallButton;
-import com.sczr.symulator_windy.ui.ElevatorCallButton.Direction;
+import com.sczr.symulator_windy.state.Direction;
 
 public class MainStage extends Stage {
 	public static final int STOREY_NUM = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra

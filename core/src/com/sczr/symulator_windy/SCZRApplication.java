@@ -1,17 +1,27 @@
 package com.sczr.symulator_windy;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Scaling;
+import com.sczr.symulator_windy.controller.ElevatorController;
+import com.sczr.symulator_windy.modules.RandomPassengersModule;
+import com.sczr.symulator_windy.packets.ElevatorCallPacket;
+import com.sczr.symulator_windy.state.Direction;
+import com.sczr.symulator_windy.ui.ConnectionStage;
+import com.sczr.symulator_windy.ui.MainStage;
 import com.sczr.symulator_windy.ui.SkinAtlas;
 
 public class SCZRApplication extends ApplicationAdapter {
 	public static int windowWidth, windowHeight;
 	public SkinAtlas skinAtlas;
 	
+	RandomPassengersModule passengersModule;
+	ElevatorController controller;
 	ConnectionStage connectionStage;
 	MainStage mainStage;
 	Stage currentStage;
@@ -30,6 +40,15 @@ public class SCZRApplication extends ApplicationAdapter {
 		
 		setStage(connectionStage);
 		//setMainStage(); //tu powinno byc connection stage ale na czas debugu to wylaczam bo wkurwia wpisywanie cyferek za kazdym razem
+		
+		try {
+			controller = new ElevatorController(49991);
+			passengersModule = new RandomPassengersModule(50009);
+			controller.register(passengersModule);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		controller.multicast(new ElevatorCallPacket(2, Direction.DOWN), RandomPassengersModule.class);
 	}
 
 	@Override
