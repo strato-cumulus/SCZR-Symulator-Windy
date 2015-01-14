@@ -4,9 +4,8 @@ import java.io.IOException;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.sczr.symulator_windy.controller.ElevatorController;
-import com.sczr.symulator_windy.modules.RandomPassengersModule;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket;
-import com.sczr.symulator_windy.state.Direction;
+import com.sczr.symulator_windy.modules.elevatorcontroller.ElevatorControllerModule;
+import com.sczr.symulator_windy.modules.randompassengers.RandomPassengersModule;
 import com.sczr.symulator_windy.ui.UIModule;
 
 public class SCZRApplication extends ApplicationAdapter
@@ -15,6 +14,7 @@ public class SCZRApplication extends ApplicationAdapter
 
 	ElevatorController     controller;
 	
+	ElevatorControllerModule controllerModule;
 	RandomPassengersModule passengersModule;
 	UIModule               uiModule;
 	
@@ -28,15 +28,16 @@ public class SCZRApplication extends ApplicationAdapter
 	public void create ()
 	{	
 		try {
-			controller = new ElevatorController(49991);
-			passengersModule = new RandomPassengersModule(50009);
-			uiModule = new UIModule(50100, windowWidth, windowHeight);
+			controller = new ElevatorController(49980);
+			controllerModule = new ElevatorControllerModule(50060);
+			passengersModule = new RandomPassengersModule(50070);
+			uiModule = new UIModule(50120, windowWidth, windowHeight);
+			controller.register(controllerModule);
 			controller.register(passengersModule);
 			controller.register(uiModule);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		controller.multicast(new ElevatorCallPacket(2, Direction.DOWN), RandomPassengersModule.class);
 	}
 
 	@Override

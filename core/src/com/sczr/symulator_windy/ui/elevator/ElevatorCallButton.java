@@ -1,16 +1,18 @@
-package com.sczr.symulator_windy.ui;
+package com.sczr.symulator_windy.ui.elevator;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.sczr.symulator_windy.state.Direction;
 
-public class ElevatorCallButton extends TextButton{
+public class ElevatorCallButton extends TextButton
+{
 	public final Direction direction;
-	public final int storey;
+	public final int story;
 	
-	ElevatorCallButton(String text, Skin skin, Direction direction, int storey) {
+	public ElevatorCallButton(String text, Skin skin, Direction direction, int story)
+	{
 		super(text, skin);
-		this.storey = storey;
+		this.story = story;
 		this.direction = direction;
 	}
 }
