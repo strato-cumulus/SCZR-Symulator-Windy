@@ -1,6 +1,7 @@
 package com.sczr.symulator_windy.ui;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -18,12 +19,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.state.Direction;
+import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
+import com.sczr.symulator_windy.ui.elevator.ElevatorCar;
 
-public class MainStage extends Stage {
+public class MainStage extends Stage
+{
 	public static final int STOREY_NUM = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
 	public static final int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
-	private final ElevatorCar elevator = new ElevatorCar(60, (int) (getHeight()/STOREY_NUM) - 30);
+	private final ElevatorCar elevator = new ElevatorCar(
+			60,
+			(int) (getHeight()/STOREY_NUM) - 30,
+			ELEVATOR_X, (int)(getHeight()/STOREY_NUM),
+			STOREY_NUM
+	);
 	final UIModule uiModule;
 	
 	int peopleWaitingOnStorey[];
@@ -171,20 +180,36 @@ public class MainStage extends Stage {
 		return (int) (floor*getHeight()/STOREY_NUM);
 	}
 	
+	void dispatchElevator(int callFloor, int destinationFloor)
+	{
+		this.elevator.dispatch(callFloor, destinationFloor);
+	}
+	
 	class ElevatorButtonListener extends ChangeListener 
 	{
 		private final int story;
 		private final Direction direction;
+		private final Random random;
 		
 		ElevatorButtonListener(int story, Direction direction)
 		{
 			this.story = story;
 			this.direction = direction;
+			this.random = new Random();
 		}
 		
 		public void changed(ChangeEvent e, Actor a)
 		{
-			uiModule.sendPacket(new ElevatorCallPacket(story, direction));
+			int randomValue;
+			
+			if(direction.equals(Direction.UP)) {
+				randomValue = Math.abs(random.nextInt() % (STOREY_NUM - story - 1)) + story + 1;
+			}
+			else {
+				randomValue = Math.abs(random.nextInt() % story);
+			}
+			System.out.println("Sending call from floor " + this.story + " to floor " + randomValue);
+			uiModule.sendPacket(new ElevatorCallPacket(this.story, randomValue));
 		}
 	}
 }

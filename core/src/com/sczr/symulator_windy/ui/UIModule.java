@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Scaling;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.modules.Module;
+import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.Packet;
 
 public class UIModule extends Module
@@ -26,7 +29,8 @@ public class UIModule extends Module
 		this.skinAtlas = new SkinAtlas();
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
 		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
-		this.setStage(connectionStage);
+		this.setStage(mainStage);
+		this.server.addListener(new DispatchElevatorListener());
 		
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
@@ -65,5 +69,16 @@ public class UIModule extends Module
 	void sendPacket(Packet packet)
 	{
 		this.client.sendTCP(packet);
+	}
+	
+	class DispatchElevatorListener extends Listener
+	{
+		@Override
+		public void received(Connection c, Object o)
+		{
+			if(o instanceof DispatchElevatorPacket) {
+				mainStage.dispatchElevator(((DispatchElevatorPacket)o).callFloor, ((DispatchElevatorPacket)o).destinationFloor);
+			}
+		}
 	}
 }

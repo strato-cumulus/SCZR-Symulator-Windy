@@ -1,93 +1,48 @@
-package com.sczr.symulator_windy.ui;
+package com.sczr.symulator_windy.ui.elevator;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
+import com.sczr.symulator_windy.ui.MainStage;
 
-public class ElevatorCar extends Actor {
-	private final int ELEVATOR_WIDTH, ELEVATOR_HEIGHT;
-	private final float DOOR_SPEED = 60;
-	private final float ELEVATOR_SPEED = 90;
+public class ElevatorCar extends Actor
+{
+	final int floorHeight;
+	final int numberOfFloors;
+	final int ELEVATOR_WIDTH, ELEVATOR_HEIGHT;
+	final float DOOR_SPEED = 60;
+	final float ELEVATOR_SPEED = 90;
 	
-	DoorState doorState;
-	ElevatorState elevatorState;
+	int onFloor = 0;
+	int destinationFloor = 0;
 	int peopleInside;
 	
-	public static enum DoorState{
-		OPENING,
-		CLOSING,
-		STILL;
-	}
+	StateMachine stateMachine;
+	State doorState;
+	State elevatorState;
 	
-	public static enum ElevatorState{
-		STILL,
-		RIDING_UP,
-		RIDING_DOWN;
-	}
-	
-	public ElevatorCar(int width, int height) {
+	public ElevatorCar(int width, int height, int xPosition, int floorHeight, int numberOfFloors) {
 		super();	
 		this.ELEVATOR_HEIGHT = height;
 		this.ELEVATOR_WIDTH = width;
-		setHeight(ELEVATOR_HEIGHT);
-		setWidth(ELEVATOR_WIDTH);
-		setX(MainStage.ELEVATOR_X);
+		this.setHeight(this.ELEVATOR_HEIGHT);
+		this.setWidth(this.ELEVATOR_WIDTH);
+		this.setX(xPosition);
+		this.floorHeight = floorHeight;
+		this.numberOfFloors = numberOfFloors;
 		
-		doorState = DoorState.STILL;
-		elevatorState = ElevatorState.RIDING_UP;
+		this.stateMachine = new StateMachine(this);
+		this.doorState = new DoorStill();
+		this.elevatorState = new ElevatorGoingUp();
 	}
 	
 	public void actElevator(float delta) throws ElevatorStateException{
 		super.act(delta);	
-		
-		
-		if(elevatorState != ElevatorState.STILL && doorState != DoorState.STILL)
-			throw new ElevatorStateException(doorState, elevatorState);
-		switch(doorState){
-		case OPENING:
-			if(getWidth() <= 0){
-				setWidth(0); 
-				doorState = DoorState.STILL;
-			}
-			else{
-				setWidth(getWidth() -DOOR_SPEED*delta); 
-			}	
-			break;
-		case CLOSING:
-			if(getWidth() >= ELEVATOR_WIDTH){
-				setWidth(ELEVATOR_WIDTH);
-				doorState = DoorState.STILL;
-			}
-			else{
-				setWidth(getWidth() + DOOR_SPEED*delta); 
-			}
-			break;
-		case STILL:
-			break;			
+
+		if(!elevatorState.getClass().equals(ElevatorStill.class) && !doorState.getClass().equals(DoorStill.class)) {
+			throw new ElevatorStateException();
 		}
-		
-		switch(elevatorState){
-		case RIDING_DOWN:
-			if(getY() <= 0){
-				setY(0);
-				elevatorState = ElevatorState.STILL;
-			}
-			else{
-				setY(getY() - ELEVATOR_SPEED*delta);
-			}
-			break;
-		case RIDING_UP:
-			if(getY() >= (MainStage.STOREY_NUM-1)*getStage().getHeight()/MainStage.STOREY_NUM){
-				setY((MainStage.STOREY_NUM-1)*getStage().getHeight()/MainStage.STOREY_NUM);
-				elevatorState = ElevatorState.STILL;
-			}
-			else{
-				setY(getY() + ELEVATOR_SPEED*delta);
-			}
-			break;
-		case STILL:
-			break;
-		}
-		
+		this.doorState = this.doorState.accept(this.stateMachine, delta);
+		this.elevatorState = this.elevatorState.accept(this.stateMachine, delta);
 	}
 	
 	public int getElevatorWidth(){
@@ -96,6 +51,22 @@ public class ElevatorCar extends Actor {
 	
 	public int getNumberOfPeopleInside(){
 		return peopleInside;
+	}
+	
+	int checkFloor()
+	{
+		return (int)(Math.floor(this.getY() / floorHeight));
+	}
+	
+	public void dispatch(int callFloor, int destinationFloor)
+	{
+		this.destinationFloor = callFloor;
+		if(callFloor > this.checkFloor()) {
+			this.elevatorState = new ElevatorGoingUp();
+		}
+		else {
+			this.elevatorState = new ElevatorGoingDown();
+		}
 	}
 }
 
