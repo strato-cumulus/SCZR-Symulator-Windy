@@ -4,19 +4,16 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import model.Floor;
-import model.state.ElevatorGoingDown;
-import model.state.ElevatorGoingUp;
-import model.state.ElevatorStill;
-import model.state.State;
+import model.elevator.state.ElevatorGoingDown;
+import model.elevator.state.ElevatorGoingUp;
+import model.elevator.state.ElevatorStill;
+import model.elevator.state.State;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.ElevatorStatePacket;
-import com.sczr.symulator_windy.packets.FloorsStopElevatorPacket;
-import com.sczr.symulator_windy.packets.Packet;
+import com.sczr.symulator_windy.packets.controllerpackets.FloorsStopElevatorPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
 public class Controler 

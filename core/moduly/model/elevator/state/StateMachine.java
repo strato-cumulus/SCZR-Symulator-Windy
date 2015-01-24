@@ -1,4 +1,4 @@
-package model.state;
+package model.elevator.state;
 
 import model.elevator.ElevatorCar;
 
@@ -44,8 +44,8 @@ public class StateMachine
 	/*TODO*/
 	State nextState(ElevatorGoingDown state, float delta)
 	{
-		if(elevatorCar.checkFloor() < elevatorCar.destinationFloor) {
-			System.out.println("Arrived on floor " + elevatorCar.destinationFloor);
+		if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor()) {
+			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
 			//elevatorCar.setY((elevatorCar.checkFloor()) * elevatorCar.getStage().getHeight() / MainStage.STOREY_NUM);
 			return new ElevatorStill();
 		}
@@ -55,8 +55,8 @@ public class StateMachine
 	
 	State nextState(ElevatorGoingUp state, float delta)
 	{
-		if(elevatorCar.checkFloor() >= elevatorCar.destinationFloor) {
-			System.out.println("Arrived on floor " + elevatorCar.destinationFloor);
+		if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()) {
+			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
 			elevatorCar.setY((elevatorCar.checkFloor()) * elevatorCar.getStage().getHeight() / MainStage.STOREY_NUM);
 			return new ElevatorStill();
 		}

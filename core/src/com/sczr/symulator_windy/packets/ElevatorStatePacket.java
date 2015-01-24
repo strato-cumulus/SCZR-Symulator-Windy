@@ -2,9 +2,11 @@ package com.sczr.symulator_windy.packets;
 
 import java.util.List;
 
+import model.elevator.state.State;
+
 import com.sun.istack.internal.FinalArrayList;
 
-import model.state.State;
+
 
 public class ElevatorStatePacket extends Packet
 {

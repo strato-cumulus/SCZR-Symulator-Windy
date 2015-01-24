@@ -1,4 +1,4 @@
-package com.sczr.symulator_windy.packets;
+package com.sczr.symulator_windy.packets.controllerpackets;
 
 import java.util.List;
 

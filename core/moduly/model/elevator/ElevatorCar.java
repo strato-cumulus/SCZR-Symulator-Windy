@@ -3,26 +3,29 @@ package model.elevator;
 import java.util.ArrayList;
 
 import model.Passenger;
-import model.state.DoorStill;
-import model.state.ElevatorGoingDown;
-import model.state.ElevatorGoingUp;
-import model.state.ElevatorStill;
-import model.state.State;
-import model.state.StateMachine;
+import model.elevator.state.DoorStill;
+import model.elevator.state.ElevatorGoingDown;
+import model.elevator.state.ElevatorGoingUp;
+import model.elevator.state.ElevatorStill;
+import model.elevator.state.State;
+import model.elevator.state.StateMachine;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 
-public class ElevatorCar extends Actor
-{
-	public static final float ELEVATOR_WIDTH = 30;
+public class ElevatorCar extends Actor{
+	
 	final int floorHeight;
 	final int numberOfFloors;
-	final int ELEVATOR_HEIGHT =70;
+	
+	public static final int ELEVATOR_HEIGHT =70;
+	public static final int ELEVATOR_WIDTH =30;
 	public final float DOOR_SPEED = 60;
 	public final float ELEVATOR_SPEED = 90;
-	int onFloor = 0;
-	public int destinationFloor = 0;
+	
+
+	private int destinationFloor = 0;
+	
 	
 	State doorState;
 	State elevatorState;
@@ -56,11 +59,6 @@ public class ElevatorCar extends Actor
 		return passengersInCar.size();
 	}
 	
-	public int getFloor()
-	{
-		return this.onFloor;
-	}
-	
 	public int checkFloor()
 	{
 		return (int)(Math.floor(this.getY() / floorHeight));
@@ -68,7 +66,7 @@ public class ElevatorCar extends Actor
 	
 	public void dispatch(int callFloor, int destinationFloor)
 	{
-		this.destinationFloor = callFloor;
+		this.setDestinationFloor(callFloor);
 		if(callFloor > this.checkFloor()) {
 			this.elevatorState = new ElevatorGoingUp();
 		}
@@ -84,6 +82,14 @@ public class ElevatorCar extends Actor
 	
 	public void enter(Passenger passenger){
 		passengersInCar.add(passenger);
+	}
+
+	public int getDestinationFloor() {
+		return destinationFloor;
+	}
+
+	public void setDestinationFloor(int destinationFloor) {
+		this.destinationFloor = destinationFloor;
 	}
 }
 
