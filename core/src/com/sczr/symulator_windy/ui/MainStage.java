@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket_;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
@@ -33,18 +32,17 @@ public class MainStage extends Stage
 	Label storeyLabels[];
 	Table mainTable;
 	Label peopleInsideLabel;
-	
-	
-	
+	PositionUpdateListener listener = new PositionUpdateListener(this.elevator);
+
 	/*************************************************************************| 
 	|
-	|		                (_)      / ____| |                                |
-	|	 _ __ ___   __ _ _ _ __ | (___ | |_ __ _  __ _  ___                   |	
-	|	| '_ ` _ \ / _` | | '_ \ \___ \| __/ _` |/ _` |/ _ \                  |	
-	|	| | | | | | (_| | | | | |____) | || (_| | (_| |  __/                  |	
-	|	|_| |_| |_|\__,_|_|_| |_|_____/ \__\__,_|\__, |\___|                  |	
-	|	                                          __/ |                       |	
-	|	                                         |___/                        |	
+	|		            (_)      / ____|                                      |
+	|	 _ __ ___   __ _ _ _ __ | (___   __ _  __ _  ___                      |	
+	|	| '_ ` _ \ / _` | | '_ \ \___ \ / _` |/ _` |/ _ \                     |	
+	|	| | | | | | (_| | | | | |____) | (_| | (_| |  __/                     |	
+	|	|_| |_| |_|\__,_|_|_| |_|_____/ \__,_|\__, |\___|                     |	
+	|	                                       __/ |                          |	
+	|	                                      |___/                           |	
 	|	                                                                      |	
 	| 		                                                                  |	
 	|    This program is free software: you can redistribute it and/or modify | 	
@@ -69,6 +67,7 @@ public class MainStage extends Stage
 		storeyLabels = new Label[STOREY_NUM];	
 		peopleWaitingOnStorey = new int[STOREY_NUM];
 		this.uiModule = uiModule;
+		
 		
 		this.elevator = new ElevatorCar(this.uiModule, 60, (int) (getHeight()/STOREY_NUM) - 30, ELEVATOR_X);
 		addActor(elevator);
@@ -145,7 +144,7 @@ public class MainStage extends Stage
 		
 		//szyb windy
 		shapeRenderer.line(ELEVATOR_X, 0, ELEVATOR_X, getHeight());
-		shapeRenderer.line(ELEVATOR_X + elevator.ELEVATOR_WIDTH, 0, ELEVATOR_X + elevator.ELEVATOR_HEIGHT, getHeight());
+		shapeRenderer.line(ELEVATOR_X + elevator.ELEVATOR_WIDTH, 0, ELEVATOR_X + elevator.ELEVATOR_WIDTH, getHeight());
 		shapeRenderer.end();
 		
 		//winda
@@ -190,6 +189,7 @@ public class MainStage extends Stage
 			this.random = new Random();
 		}
 		
+		@Override
 		public void changed(ChangeEvent e, Actor a)
 		{
 			int randomValue;

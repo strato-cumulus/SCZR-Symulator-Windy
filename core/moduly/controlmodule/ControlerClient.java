@@ -21,6 +21,7 @@ public class ControlerClient
 	{
 		this.client = new Client();
 		this.client.start();
+		SerializationList.register(this.client.getKryo());
 		try 
 		{
 			this.client.connect(5000, IPAdress, tcpPort);
@@ -29,7 +30,6 @@ public class ControlerClient
 		{
 			System.err.println("Nie uda³o sie po³aczyc");
 		}
-		SerializationList.register(this.client.getKryo());
 	}
 	
 	public void runControler()

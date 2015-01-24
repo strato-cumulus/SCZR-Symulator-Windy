@@ -8,8 +8,9 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket_;
-import com.sczr.symulator_windy.packets.NewPassengerPacket;
+import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
+
 
 
 public class Model{
@@ -43,6 +44,7 @@ public class Model{
 
 				//modul gui
 				
+
 			}
 		});
 		
