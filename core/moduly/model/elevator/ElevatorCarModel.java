@@ -1,6 +1,8 @@
 package model.elevator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import model.Passenger;
 import model.elevator.state.DoorStill;
@@ -10,10 +12,9 @@ import model.elevator.state.ElevatorStill;
 import model.elevator.state.State;
 import model.elevator.state.StateMachine;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 
-public class ElevatorCar extends Actor{
+public class ElevatorCarModel{
 	
 	final int floorHeight;
 	final int numberOfFloors;
@@ -25,17 +26,17 @@ public class ElevatorCar extends Actor{
 	
 
 	private int destinationFloor = 0;
-	private float currentHeight = 0;
+	private float currentVerticalPosition = 0;
 	private float currentDoorWidth = ELEVATOR_WIDTH;
 	
 	
 	State doorState;
-	State elevatorState;
+	public State elevatorState;
 	
 	final ArrayList<Passenger> passengersInCar;
 	private StateMachine stateMachine;
 	
-	public ElevatorCar(int numberOfFloors, int floorHeight) {
+	public ElevatorCarModel(int numberOfFloors, int floorHeight) {
 		super();	
 		this.numberOfFloors = numberOfFloors;
 		this.stateMachine = new StateMachine(this);
@@ -47,7 +48,7 @@ public class ElevatorCar extends Actor{
 	}
 	
 	public void actElevator(float delta) throws ElevatorStateException{
-		super.act(delta);	
+		//super.act(delta);	
 
 		if(!elevatorState.getClass().equals(ElevatorStill.class) && !doorState.getClass().equals(DoorStill.class)) {
 			throw new ElevatorStateException();
@@ -63,7 +64,7 @@ public class ElevatorCar extends Actor{
 	
 	public int checkFloor()
 	{
-		return (int)(Math.floor(this.getY() / floorHeight));
+		return (int)(Math.floor(this.getCurrentVericalPosition() / floorHeight));
 	}
 	
 	public void dispatch(int callFloor, int destinationFloor)
@@ -98,10 +99,34 @@ public class ElevatorCar extends Actor{
 		return currentDoorWidth;
 	}
 
-	public float getCurrentHeight() {
-		return currentHeight;
+	public float getCurrentVericalPosition() {
+		return currentVerticalPosition;
+	}
+	
+	public ArrayList<Integer> getPassangerDestinations(){
+		Set<Integer> destinations = new HashSet<>();
+		for (Passenger passenger : passengersInCar) {
+			destinations.add(passenger.getDestination());
+		}
+		return new ArrayList<>(destinations);
 	}
 
+	public float getWidth() {
+		return getCurrentDoorWidth();
+	}
+
+	public void setWidth(float elevatorWidth) {
+		currentDoorWidth = elevatorWidth;
+	}
+
+	public float getY() {
+		return getCurrentVericalPosition();
+	}
+
+	public void setY(float f) {
+		currentVerticalPosition = f;
+		
+	}
 
 }
 
