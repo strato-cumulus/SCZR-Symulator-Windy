@@ -29,6 +29,7 @@ public class UIModule
 		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
 		this.setStage(mainStage);
 		
+		this.client = new Client();
 		client.start();
 		try {
 			client.connect(50, "127.0.0.1", 1234);
