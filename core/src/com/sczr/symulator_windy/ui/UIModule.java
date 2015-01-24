@@ -1,6 +1,9 @@
 package com.sczr.symulator_windy.ui;
 
 import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,6 +13,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
+import com.sczr.symulator_windy.packets.GUIpackets.InitializeGUIPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
 
@@ -32,12 +37,25 @@ public class UIModule
 			client.connect(50, "127.0.0.1", 1234);
 		} catch (IOException e) { e.printStackTrace(); }
 		
-		client.addListener(new Listener() {
+		SerializationList.register(client.getKryo());
+		client.sendTCP(new GUIRegisterPacket());
+		
+		ArrayBlockingQueue<InitializeGUIPacket> bq = new ArrayBlockingQueue<>(1);
+		
+		Listener l = new Listener() {
 			@Override public void received(Connection c, Object o) {
-				
+				if(o instanceof InitializeGUIPacket) {
+					InitializeGUIPacket packet = (InitializeGUIPacket)o;
+					try{bq.put(packet);}catch(InterruptedException e){}
+				}
 			}
-			private void act(Object o) {};
-		});
+		};
+		
+		client.addListener(l);
+		
+		InitializeGUIPacket packet = bq.poll();
+		System.out.println(packet.storeyHeight + " " + packet.storeyNumber);
+		client.removeListener(l);
 		
 		this.skinAtlas = new SkinAtlas();
 		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
