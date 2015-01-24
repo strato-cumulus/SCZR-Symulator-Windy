@@ -13,6 +13,8 @@ import com.sczr.symulator_windy.serialization.SerializationList;
 
 
 
+
+
 public class Model{
 	public static final int NUMBER_OF_FLOORS = 10;
 	public static final int FLOOR_HEIGHT = 90;
@@ -27,12 +29,12 @@ public class Model{
 		this.server = new Server();
 		this.server.start();
 		this.server.bind(tcpPort);
-		
 		this.server.addListener(new Listener() {
 			
 			@Override
 			public void received(Connection c, Object o) {
 				//modul pasazerow
+
 				if(o instanceof ElevatorCallPacket) {
 					ElevatorCallPacket p = (ElevatorCallPacket)o;
 				}
@@ -41,9 +43,9 @@ public class Model{
 					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination));
 				}				
 				//modul sterowania
-
-				//modul gui
 				
+				//modul gui
+				//else if(o instanceof ElevatorCa)
 
 			}
 		});
