@@ -17,7 +17,6 @@ class PositionUpdateListener extends Listener
 	public void received(Connection c, Object o)
 	{
 		if(o instanceof ElevatorStateInfoPacket){
-			System.out.println("asd");
 			this.update((ElevatorStateInfoPacket) o);
 		}
 	}
