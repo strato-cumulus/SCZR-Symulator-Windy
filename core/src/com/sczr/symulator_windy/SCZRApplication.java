@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.sczr.symulator_windy.controller.ElevatorController;
-import com.sczr.symulator_windy.modules.elevatorcontroller.ElevatorControllerModule;
+import com.sczr.symulator_windy.modules.model.Model;
 import com.sczr.symulator_windy.modules.randompassengers.RandomPassengersModule;
 import com.sczr.symulator_windy.ui.UIModule;
 
@@ -14,7 +14,7 @@ public class SCZRApplication extends ApplicationAdapter
 
 	ElevatorController     controller;
 	
-	ElevatorControllerModule controllerModule;
+	Model controllerModule;
 	RandomPassengersModule passengersModule;
 	UIModule               uiModule;
 	
@@ -29,7 +29,7 @@ public class SCZRApplication extends ApplicationAdapter
 	{	
 		try {
 			controller = new ElevatorController(49980);
-			controllerModule = new ElevatorControllerModule(50060);
+			controllerModule = new Model(50060);
 			passengersModule = new RandomPassengersModule(50070);
 			uiModule = new UIModule(50120, windowWidth, windowHeight);
 			controller.register(controllerModule);

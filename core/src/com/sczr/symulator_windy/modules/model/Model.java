@@ -1,4 +1,4 @@
-package com.sczr.symulator_windy.modules.elevatorcontroller;
+package com.sczr.symulator_windy.modules.model;
 
 import java.io.IOException;
 
@@ -9,9 +9,9 @@ import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.Packet;
 
-public class ElevatorControllerModule extends Module
+public class Model extends Module
 {	
-	public ElevatorControllerModule(int tcpPort) throws IOException
+	public Model(int tcpPort) throws IOException
 	{
 		super(tcpPort);
 		this.server.addListener(new Listener() {

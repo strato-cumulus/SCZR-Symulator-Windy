@@ -9,7 +9,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.sczr.symulator_windy.modules.Module;
-import com.sczr.symulator_windy.modules.elevatorcontroller.ElevatorControllerModule;
+import com.sczr.symulator_windy.modules.model.Model;
 import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.Packet;
@@ -103,7 +103,7 @@ public class ElevatorController
 		{
 			if(o instanceof ElevatorCallPacket) {
 				System.out.println("Sending ElevatorCallPacket");
-				multicast((ElevatorCallPacket)o, ElevatorControllerModule.class);
+				multicast((ElevatorCallPacket)o, Model.class);
 			}
 		}
 	}
