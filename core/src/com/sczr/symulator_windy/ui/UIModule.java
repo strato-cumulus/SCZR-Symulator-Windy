@@ -32,6 +32,8 @@ public class UIModule
 		this.client = new Client();
 		SerializationList.register(client.getKryo());
 		ArrayBlockingQueue<InitializeGUIPacket> bq = new ArrayBlockingQueue<>(1);
+
+		this.skinAtlas = new SkinAtlas();
 		
 		Listener l = new Listener() {
 			@Override
@@ -47,13 +49,13 @@ public class UIModule
 					System.out.println(packet.storeyNumber);
 					try {
 						bq.put(packet);
-					} catch(InterruptedException e) {e.printStackTrace();}
+					} catch(InterruptedException e) {e.printStackTrace();}			
 					client.removeListener(this);
 				}
 			}
 		};
 		client.addListener(l);
-		
+
 		client.start();
 		try {
 			client.connect(50, "127.0.0.1", 1234);
@@ -61,8 +63,7 @@ public class UIModule
 		
 		InitializeGUIPacket p = bq.poll();
 
-		this.skinAtlas = new SkinAtlas();
-		this.mainStage = new MainStage(skinAtlas.getSkin(), this, p.storeyNumber, p.storeyHeight);
+		this.mainStage = new MainStage(skinAtlas.getSkin(), p.storeyNumber, p.storeyHeight);
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
 		client.addListener(mainStage.listener);
 		this.setStage(mainStage);

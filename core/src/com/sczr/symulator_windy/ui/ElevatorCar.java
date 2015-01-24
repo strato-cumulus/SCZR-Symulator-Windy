@@ -10,7 +10,7 @@ public class ElevatorCar extends Actor
 	
 	private int peopleInside = 0;
 	
-	public ElevatorCar(UIModule module, int width, int height, int xPosition)
+	public ElevatorCar(int width, int height, int xPosition)
 	{
 		super();	
 		this.ELEVATOR_HEIGHT = height;
