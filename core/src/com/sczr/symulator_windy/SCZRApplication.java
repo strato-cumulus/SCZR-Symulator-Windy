@@ -2,8 +2,6 @@ package com.sczr.symulator_windy;
 
 import java.io.IOException;
 
-import model.Model;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.sczr.symulator_windy.ui.UIModule;
 
@@ -11,7 +9,7 @@ public class SCZRApplication extends ApplicationAdapter
 {
 	public static int windowWidth, windowHeight;
 
-	Model controllerModule;
+	//Model controllerModule;
 	UIModule               uiModule;
 	
 	public SCZRApplication(int windowWidth, int windowHeight)
@@ -24,8 +22,8 @@ public class SCZRApplication extends ApplicationAdapter
 	public void create ()
 	{
 		try {
-			controllerModule = new Model(50060);
-			uiModule = new UIModule(50120, windowWidth, windowHeight);
+			//controllerModule = new Model(1234);
+			uiModule = new UIModule(1234, windowWidth, windowHeight);
 			//controller.register(controllerModule);
 		} catch(IOException e) {
 			e.printStackTrace();

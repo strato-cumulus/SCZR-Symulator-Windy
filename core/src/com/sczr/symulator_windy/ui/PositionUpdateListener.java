@@ -16,10 +16,12 @@ class PositionUpdateListener extends Listener
 	@Override
 	public void received(Connection c, Object o)
 	{
-		this.update(o);
+		if(o instanceof ElevatorStateInfoPacket){
+			System.out.println("asd");
+			this.update((ElevatorStateInfoPacket) o);
+		}
 	}
 	
-	void update(Object o) {};
 	void update(ElevatorStateInfoPacket packet)
 	{
 		elevator.update(packet.verticalPosition, packet.doorWidth);

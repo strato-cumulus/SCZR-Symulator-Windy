@@ -25,7 +25,7 @@ public class ElevatorCar extends Actor{
 	
 
 	private int destinationFloor = 0;
-	private float currentHeight;
+	private float currentHeight = 40;
 	private float currentDoorWidth;
 	
 	
