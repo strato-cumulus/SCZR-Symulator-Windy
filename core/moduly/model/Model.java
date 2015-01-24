@@ -1,4 +1,4 @@
-package com.sczr.symulator_windy.modules.model;
+package model;
 
 import java.io.IOException;
 
@@ -27,6 +27,11 @@ public class Model{
 				}
 			}
 		});
+	}
+	
+	public static void main(String[] args){
+		System.out.println("model");
+		while(true) System.out.println("model");
 	}
 
 }
