@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
 
@@ -24,18 +26,27 @@ public class UIModule
 		
 	public UIModule(int tcpPort, int windowWidth, int windowHeight) throws IOException
 	{
-		this.skinAtlas = new SkinAtlas();
-		this.connectionStage = new ConnectionStage(skinAtlas, this);
-		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
-		this.setStage(mainStage);
-		
 		this.client = new Client();
 		client.start();
 		try {
 			client.connect(50, "127.0.0.1", 1234);
 		} catch (IOException e) { e.printStackTrace(); }
+		
+		client.addListener(new Listener() {
+			@Override public void received(Connection c, Object o) {
+				
+			}
+			private void act(Object o) {};
+		});
+		
+		this.skinAtlas = new SkinAtlas();
+		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
+		this.connectionStage = new ConnectionStage(skinAtlas, this);
+		
 		client.addListener(mainStage.listener);
 		SerializationList.register(client.getKryo());
+		
+		this.setStage(mainStage);
 		
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
