@@ -21,7 +21,7 @@ import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
 public class MainStage extends Stage
 {
-	static int stories = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
+	static int stories;//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
 	static int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
@@ -62,12 +62,12 @@ public class MainStage extends Stage
 	//Date of Edition --
 	//Power Supply: CODEGEN 800W
 	
-	public MainStage(Skin skin, int storeyCount, int storeyHeight){	 
+	public MainStage(Skin skin, int storeyCount, int storeyHeight, int elevatorWidth){	 
 		stories = storeyCount;
 		storeyLabels = new Label[stories];	
 		peopleWaitingOnStorey = new int[stories];
 
-		this.elevator = new ElevatorCar(storeyHeight, (int) (getHeight()/stories) - 30, ELEVATOR_X);
+		this.elevator = new ElevatorCar(elevatorWidth, (int) (getHeight()/stories) - 30, ELEVATOR_X);
 		addActor(elevator);
 		this.listener = new PositionUpdateListener(elevator);
 		
@@ -107,8 +107,8 @@ public class MainStage extends Stage
 		for(int i=1; i<stories - 1; i++){
 			ElevatorCallButton up = new ElevatorCallButton("^", skin, Direction.UP, i);
 			ElevatorCallButton down = new ElevatorCallButton("v", skin, Direction.DOWN, i);
-			up.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+60);
-			down.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+45);
+			up.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+storeyHeight*0.66f);
+			down.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+storeyHeight*0.33f);
 			callButtons.add(up);
 			callButtons.add(down);
 			up.addListener(new ElevatorButtonListener(i, Direction.UP));

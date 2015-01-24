@@ -56,7 +56,7 @@ public class Model{
 				else if(o instanceof GUIRegisterPacket){
 					GUIConnectionId = c.getID();
 					System.out.println("rejestracja gui");
-					c.sendTCP(new InitializeGUIPacket(NUMBER_OF_FLOORS, FLOOR_HEIGHT));
+					c.sendTCP(new InitializeGUIPacket(NUMBER_OF_FLOORS, FLOOR_HEIGHT, elevatorCar.ELEVATOR_WIDTH));
 				}
 				//else if(o instanceof ElevatorCa)
 

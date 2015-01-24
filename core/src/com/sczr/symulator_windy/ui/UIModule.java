@@ -69,7 +69,7 @@ public class UIModule
 			p = null;
 		} 
 
-		this.mainStage = new MainStage(skinAtlas.getSkin(), p.storeyNumber, p.storeyHeight);
+		this.mainStage = new MainStage(skinAtlas.getSkin(), p.storeyNumber, p.storeyHeight, p.elevatorWidth);
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
 		client.addListener(mainStage.listener);
 		this.setStage(mainStage);
