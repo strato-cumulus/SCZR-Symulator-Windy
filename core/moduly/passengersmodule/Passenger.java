@@ -1,9 +1,16 @@
 package passengersmodule;
 
 public class Passenger {
-	final int ID;
-	final int destination;
-	final int floor;
+	private final int ID;
+	private final int destination;
+	private final int floor;
+	
+	Passenger()
+	{
+		this.ID = 0;
+		this.destination = 0;
+		this.floor = 0;
+	}
 	
 	Passenger(final int ID, final int destination, final int floor)
 	{
@@ -11,6 +18,7 @@ public class Passenger {
 		this.destination = destination;
 		this.floor = floor;
 	}
+	
 	
 	public int getDestination()
 	{

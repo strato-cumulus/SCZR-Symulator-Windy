@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-import com.sczr.symulator_windy.packets.ElevatorStatePacket;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
@@ -36,12 +33,14 @@ public class PassengerClient {
 		while(true)
 		{
 			RandomCreatingOfPassengers create = new RandomCreatingOfPassengers();
-			//Passenger newPassenger = RandomCreatingOfPassengers.createRandomPassenger(LAST_ID);
-			NewPassengerPacket passengerPacket = new NewPassengerPacket(newPassenger.ID, newPassenger.destination, newPassenger.floor);
+			newPassenger = create.createRandomPassenger(LAST_ID);
+			NewPassengerPacket passengerPacket = new NewPassengerPacket(newPassenger.getID(), newPassenger.getDestination(), newPassenger.getFloor());
 			client.sendTCP(passengerPacket);
-			TimeUnit.SECONDS.sleep(2);
-			//delete newPassenger;
-			
+			try {
+				TimeUnit.SECONDS.sleep(2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
