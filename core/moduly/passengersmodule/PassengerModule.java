@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class PassengerModule {
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws InterruptedException
 	{
 		String adress;
 		int port;
@@ -15,9 +15,8 @@ public class PassengerModule {
 		//port = input.nextInt();
 		adress = "127.0.0.1";
 		port = 1234;
-		PassengerClient passengerClient = new PassengerClient(port, adress);
-		passengerClient.startPassengerClient();
-
+		new PassengerClient(port, adress);
+		Thread.currentThread().join();
 	}
 	
 }

@@ -107,8 +107,10 @@ public class MainStage extends Stage
 			});
 			
 			client.addListener(new Listener() {
-				public void received(Connection c, Object o) {
+				@Override
+				public void received(Connection c, Object o) {			
 					if (o instanceof NewPassengerPacket) {
+						System.out.println("gui pas");
 						if(((NewPassengerPacket)o).floor > stories) {
 							return;
 						}

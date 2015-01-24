@@ -21,7 +21,6 @@ import com.sczr.symulator_windy.serialization.SerializationList;
 
 
 
-
 public class Model{
 	public static final int NUMBER_OF_FLOORS = 10;
 	public static final int FLOOR_HEIGHT = 90;
@@ -40,6 +39,9 @@ public class Model{
 	
 	
 	public Model(int tcpPort) throws IOException{
+		for (int i=0; i<NUMBER_OF_FLOORS; i++) {
+			floors[i] = new Floor(i);
+		}
 		
 		this.server = new Server();
 		this.server.start();
@@ -55,7 +57,9 @@ public class Model{
 				}
 				else if(o instanceof NewPassengerPacket){
 					NewPassengerPacket p = (NewPassengerPacket)o;
+					System.out.println("dodano nowego pasazera");
 					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination));
+					server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
 				}				
 				//modul sterowania
 				else if(o instanceof ControllerRegisterPacket){
@@ -66,7 +70,7 @@ public class Model{
 				else if(o instanceof GUIRegisterPacket){
 					guiConnectionId = c.getID();
 					System.out.println("rejestracja gui");
-					c.sendTCP(new InitializeGUIPacket(NUMBER_OF_FLOORS, FLOOR_HEIGHT, elevatorCar.ELEVATOR_WIDTH));
+					c.sendTCP(new InitializeGUIPacket(NUMBER_OF_FLOORS, FLOOR_HEIGHT, ElevatorCarModel.ELEVATOR_WIDTH));
 				}
 				//else if(o instanceof ElevatorCa)
 

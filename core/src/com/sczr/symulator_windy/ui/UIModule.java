@@ -59,7 +59,10 @@ public class UIModule
 		client.start();
 		try {
 			client.connect(50, "127.0.0.1", 1234);
-		} catch (IOException e) { e.printStackTrace(); }
+		} catch (IOException e) { 
+			e.printStackTrace(); 
+			System.exit(1);
+		}
 		
 		InitializeGUIPacket p;
 		try {

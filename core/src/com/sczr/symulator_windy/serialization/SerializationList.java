@@ -12,6 +12,8 @@ import com.sczr.symulator_windy.packets.controllerpackets.FloorsStopElevatorPack
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
+
+
 public class SerializationList 
 {
 	public static void register(Kryo kryo)
@@ -33,5 +35,6 @@ public class SerializationList
 		kryo.register(NewPassengerPacket.class);
 
 		kryo.register(ControllerRegisterPacket.class);
+	
 	}
 }
