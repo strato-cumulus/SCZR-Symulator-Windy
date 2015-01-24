@@ -25,6 +25,8 @@ public class ElevatorCar extends Actor{
 	
 
 	private int destinationFloor = 0;
+	private float currentHeight;
+	private float currentDoorWidth;
 	
 	
 	State doorState;
@@ -91,5 +93,15 @@ public class ElevatorCar extends Actor{
 	public void setDestinationFloor(int destinationFloor) {
 		this.destinationFloor = destinationFloor;
 	}
+
+	public float getCurrentDoorWidth() {
+		return currentDoorWidth;
+	}
+
+	public float getCurrentHeight() {
+		return currentHeight;
+	}
+
+
 }
 
