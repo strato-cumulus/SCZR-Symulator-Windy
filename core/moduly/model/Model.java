@@ -55,6 +55,7 @@ public class Model{
 				//modul gui
 				else if(o instanceof GUIRegisterPacket){
 					GUIConnectionId = c.getID();
+					System.out.println("rejestracja gui");
 					c.sendTCP(new InitializeGUIPacket(NUMBER_OF_FLOORS, FLOOR_HEIGHT));
 				}
 				//else if(o instanceof ElevatorCa)
@@ -66,14 +67,14 @@ public class Model{
 		
 		SerializationList.register(server.getKryo());
         Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
 			
 			@Override
 			public void run() {
 				server.sendToTCP(GUIConnectionId, 
 						new ElevatorStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentHeight()));
 			}
-		}, GUI_REFRESH_RATE);
+		}, 0, GUI_REFRESH_RATE);
 		
 	}
 	

@@ -2,8 +2,6 @@ package com.sczr.symulator_windy.ui;
 
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,40 +30,39 @@ public class UIModule
 	public UIModule(int tcpPort, int windowWidth, int windowHeight) throws IOException
 	{
 		this.client = new Client();
+		SerializationList.register(client.getKryo());
+		ArrayBlockingQueue<InitializeGUIPacket> bq = new ArrayBlockingQueue<>(1);
+		
+		Listener l = new Listener() {
+			@Override
+			public void connected (Connection connection) {
+				client.sendTCP(new GUIRegisterPacket());
+			}
+			
+			@Override 
+			public void received(Connection c, Object o) {
+				if(o instanceof InitializeGUIPacket) {
+					InitializeGUIPacket packet = (InitializeGUIPacket)o;
+					System.out.println(packet.storeyHeight);
+					System.out.println(packet.storeyNumber);
+					client.removeListener(this);
+				}
+			}
+		};
+		client.addListener(l);
+		
 		client.start();
 		try {
 			client.connect(50, "127.0.0.1", 1234);
 		} catch (IOException e) { e.printStackTrace(); }
 		
-		SerializationList.register(client.getKryo());
-		client.sendTCP(new GUIRegisterPacket());
-		
-		ArrayBlockingQueue<InitializeGUIPacket> bq = new ArrayBlockingQueue<>(1);
-		
-		Listener l = new Listener() {
-			@Override public void received(Connection c, Object o) {
-				if(o instanceof InitializeGUIPacket) {
-					InitializeGUIPacket packet = (InitializeGUIPacket)o;
-					try{bq.put(packet);}catch(InterruptedException e){}
-				}
-			}
-		};
-		
-		client.addListener(l);
-		
-		InitializeGUIPacket packet = bq.poll();
-		System.out.println(packet.storeyHeight + " " + packet.storeyNumber);
-		client.removeListener(l);
-		
+
 		this.skinAtlas = new SkinAtlas();
 		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
-		
 		client.addListener(mainStage.listener);
-		SerializationList.register(client.getKryo());
-		
 		this.setStage(mainStage);
-		
+
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 	}

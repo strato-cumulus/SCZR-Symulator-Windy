@@ -27,7 +27,7 @@ public class ElevatorCar extends Actor
 	
 	void update(float verticalPosition, float doorWidth)
 	{
-		this.setX(verticalPosition);
+		this.setY(verticalPosition);
 		this.setWidth(doorWidth);
 	}
 	
