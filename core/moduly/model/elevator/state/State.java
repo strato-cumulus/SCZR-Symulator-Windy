@@ -1,4 +1,4 @@
-package model.state;
+package model.elevator.state;
 
 
 abstract public class State

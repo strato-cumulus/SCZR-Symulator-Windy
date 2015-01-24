@@ -1,4 +1,4 @@
-package model.state;
+package model.elevator.state;
 
 
 public class ElevatorGoingDown extends State
