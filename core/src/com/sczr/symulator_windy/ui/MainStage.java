@@ -15,10 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
-import com.sczr.symulator_windy.packets.ElevatorCoordinatesPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
@@ -192,6 +189,7 @@ public class MainStage extends Stage
 			this.random = new Random();
 		}
 		
+		@Override
 		public void changed(ChangeEvent e, Actor a)
 		{
 			int randomValue;

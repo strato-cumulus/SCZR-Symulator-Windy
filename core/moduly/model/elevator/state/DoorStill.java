@@ -1,7 +1,7 @@
-package model.state;
+package model.elevator.state;
 
 
-public class DoorClosing extends State
+public class DoorStill extends State
 {
 	@Override
 	public State accept(StateMachine sm, float delta)

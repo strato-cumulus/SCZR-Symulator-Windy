@@ -7,7 +7,7 @@ import javax.tools.Diagnostic;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
+import com.sczr.symulator_windy.packets.DispatchElevatorPacket_;
 import com.sczr.symulator_windy.packets.ElevatorStatePacket;
 import com.sczr.symulator_windy.packets.Packet;
 import com.sczr.symulator_windy.serialization.SerializationList;
@@ -40,7 +40,7 @@ public class ControlerClient
 	        {
 	        	if (object instanceof ElevatorStatePacket) 
 	        	{
-	        		DispatchElevatorPacket packet = new DispatchElevatorPacket(1, 1);
+	        		DispatchElevatorPacket_ packet = new DispatchElevatorPacket_(1, 1);
 	        		connection.sendTCP(packet);
 	        	}
 	        } 

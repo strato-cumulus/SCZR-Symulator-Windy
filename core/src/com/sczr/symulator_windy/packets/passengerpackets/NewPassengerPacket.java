@@ -1,4 +1,6 @@
-package com.sczr.symulator_windy.packets;
+package com.sczr.symulator_windy.packets.passengerpackets;
+
+import com.sczr.symulator_windy.packets.Packet;
 
 public class NewPassengerPacket extends Packet {
 	public final int ID;
