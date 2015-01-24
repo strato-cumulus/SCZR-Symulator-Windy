@@ -35,6 +35,7 @@ public class PassengerClient {
 			RandomCreatingOfPassengers create = new RandomCreatingOfPassengers();
 			newPassenger = create.createRandomPassenger(LAST_ID);
 			NewPassengerPacket passengerPacket = new NewPassengerPacket(newPassenger.getID(), newPassenger.getDestination(), newPassenger.getFloor());
+			LAST_ID = newPassenger.getID();
 			client.sendTCP(passengerPacket);
 			try {
 				TimeUnit.SECONDS.sleep(2);
