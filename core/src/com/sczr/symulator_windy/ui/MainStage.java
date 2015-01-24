@@ -35,9 +35,8 @@ public class MainStage extends Stage
 	Label storeyLabels[];
 	Table mainTable;
 	Label peopleInsideLabel;
-	
-	
-	
+	PositionUpdateListener listener = new PositionUpdateListener(this.elevator);
+
 	/*************************************************************************| 
 	|
 	|		            (_)      / ____|                                      |
@@ -71,6 +70,7 @@ public class MainStage extends Stage
 		storeyLabels = new Label[STOREY_NUM];	
 		peopleWaitingOnStorey = new int[STOREY_NUM];
 		this.uiModule = uiModule;
+		
 		
 		this.elevator = new ElevatorCar(this.uiModule, 60, (int) (getHeight()/STOREY_NUM) - 30, ELEVATOR_X);
 		addActor(elevator);
@@ -205,19 +205,4 @@ public class MainStage extends Stage
 			System.out.println("Sending call from floor " + this.story + " to floor " + randomValue);
 		}
 	}	
-	
-	class PositionUpdateListener extends Listener
-	{
-		@Override
-		public void received(Connection c, Object o)
-		{
-			this.update(o);
-		}
-		
-		void update(Object o) {};
-		void update(ElevatorCoordinatesPacket packet)
-		{
-			elevator.update(packet.verticalPosition, packet.doorWidth);
-		}
-	}
 }
