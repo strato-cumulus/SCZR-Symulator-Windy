@@ -38,9 +38,14 @@ class StateMachine
 		return state;
 	}
 	
+	
+	/* WPIERDOL TUTAJ handleFloor() !!!*/
+	
+	/*TODO*/
 	State nextState(ElevatorGoingDown state, float delta)
 	{
 		if(elevatorCar.checkFloor() < elevatorCar.destinationFloor) {
+			System.out.println("Arrived on floor " + elevatorCar.destinationFloor);
 			//elevatorCar.setY((elevatorCar.checkFloor()) * elevatorCar.getStage().getHeight() / MainStage.STOREY_NUM);
 			return new ElevatorStill();
 		}

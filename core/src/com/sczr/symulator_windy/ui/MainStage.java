@@ -21,18 +21,17 @@ import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.state.Direction;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCar;
+import com.sczr.symulator_windy.ui.elevator.Floor;
+import com.sczr.symulator_windy.ui.passengers.Passenger;
+import com.sczr.symulator_windy.ui.passengers.PassengerState;
 
 public class MainStage extends Stage
 {
 	public static final int STOREY_NUM = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
 	public static final int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
-	private final ElevatorCar elevator = new ElevatorCar(
-			60,
-			(int) (getHeight()/STOREY_NUM) - 30,
-			ELEVATOR_X, (int)(getHeight()/STOREY_NUM),
-			STOREY_NUM
-	);
+	private final ElevatorCar elevator;
+	final Floor[] floors = new Floor[STOREY_NUM];
 	final UIModule uiModule;
 	
 	int peopleWaitingOnStorey[];
@@ -73,10 +72,17 @@ public class MainStage extends Stage
 	//Power Supply: CODEGEN 800W
 	
 	public MainStage(Skin skin, UIModule uiModule){	
-		addActor(elevator);
 		storeyLabels = new Label[STOREY_NUM];	
 		peopleWaitingOnStorey = new int[STOREY_NUM];
 		this.uiModule = uiModule;
+		
+		this.elevator = new ElevatorCar(
+				this.uiModule, 60,
+				(int) (getHeight()/STOREY_NUM) - 30,
+				ELEVATOR_X, (int)(getHeight()/STOREY_NUM),
+				STOREY_NUM
+		);
+		addActor(elevator);
 		
 		for(int i=0; i<STOREY_NUM; i++){
 			Label label = new Label("", skin);
@@ -210,6 +216,36 @@ public class MainStage extends Stage
 			}
 			System.out.println("Sending call from floor " + this.story + " to floor " + randomValue);
 			uiModule.sendPacket(new ElevatorCallPacket(this.story, randomValue));
+		}
+	}
+	
+	public void handleFloor()
+	{
+		final int floor = elevator.getFloor();
+		if (this.elevator.getNumberOfPeopleInside() > 0)
+		{
+			for(Passenger passenger : elevator.getPassengers())
+			{
+				if(passenger.getDestination() == floor)
+				{
+					passenger.setState(PassengerState.ARRIVED);
+					floors[floor].addArrivedPassenger(passenger);
+					elevator.exit(passenger);
+				}
+			}
+			elevator.offButton(floor);
+			
+		}
+
+		if (this.elevator.getNumberOfPeopleInside() < 5)
+		{
+			while(this.elevator.getNumberOfPeopleInside() < 5)
+			{
+				Passenger passenger = floors[floor].getInPassenger();
+				passenger.setState(PassengerState.INSIDE);
+				elevator.chooseFloor(passenger.getDestination());
+				elevator.enter(passenger);
+			}
 		}
 	}
 }
