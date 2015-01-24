@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 
 
 public class Model{
@@ -22,10 +21,7 @@ public class Model{
 			
 			@Override
 			public void received(Connection c, Object o) {
-				if(o instanceof ElevatorCallPacket) {
-					System.out.println("ElevatorCallPacket received");
-					ElevatorCallPacket p = (ElevatorCallPacket)o;
-				}
+
 			}
 		});
 	}

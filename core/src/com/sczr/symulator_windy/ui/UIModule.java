@@ -7,27 +7,33 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Scaling;
+import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
-import com.sczr.symulator_windy.packets.Packet;
 
 public class UIModule
 {
-	private final SkinAtlas       skinAtlas;
+	private Client client;
+	private final SkinAtlas skinAtlas;
 	private final ConnectionStage connectionStage;
-	private final MainStage       mainStage;
-	private Stage                 currentStage;
+	private final MainStage mainStage;
+	private Stage currentStage;
 	
-	public final int              windowWidth;
-	public final int              windowHeight;
-	
+	public final int windowWidth;
+	public final int windowHeight;
+		
 	public UIModule(int tcpPort, int windowWidth, int windowHeight) throws IOException
 	{
 		this.skinAtlas = new SkinAtlas();
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
 		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
 		this.setStage(mainStage);
+		
+		client.start();
+		try {
+			client.connect(50, "127.0.0.1", 1234);
+		} catch (IOException e) { }
+		client.addListener(mainStage.listener);
 		
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;

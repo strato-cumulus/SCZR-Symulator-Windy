@@ -22,7 +22,7 @@ public class SCZRApplication extends ApplicationAdapter
 	
 	@Override
 	public void create ()
-	{	
+	{
 		try {
 			controllerModule = new Model(50060);
 			uiModule = new UIModule(50120, windowWidth, windowHeight);
