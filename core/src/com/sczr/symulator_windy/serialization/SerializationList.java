@@ -2,7 +2,7 @@ package com.sczr.symulator_windy.serialization;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.sczr.symulator_windy.packets.DispatchElevatorPacket_;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket_;
+import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.ElevatorStateInfoPacket;
 import com.sczr.symulator_windy.packets.ElevatorStatePacket;
 import com.sczr.symulator_windy.packets.FloorsStopElevatorPacket;
@@ -18,12 +18,12 @@ public class SerializationList
 		kryo.register(Packet.class);
 
 		kryo.register(DispatchElevatorPacket_.class);
-		kryo.register(ElevatorCallPacket_.class);
+		kryo.register(ElevatorCallPacket.class);
 
 
 		kryo.register(ElevatorStateInfoPacket.class);
 
-		kryo.register(ElevatorCallPacket_.class);
+		kryo.register(ElevatorCallPacket.class);
 
 		kryo.register(FloorsStopElevatorPacket.class);
 		kryo.register(ElevatorStatePacket.class);

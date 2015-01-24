@@ -7,7 +7,7 @@ import model.elevator.ElevatorCar;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket_;
+import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
@@ -33,8 +33,8 @@ public class Model{
 			@Override
 			public void received(Connection c, Object o) {
 				//modul pasazerow
-				if(o instanceof ElevatorCallPacket_) {
-					ElevatorCallPacket_ p = (ElevatorCallPacket_)o;
+				if(o instanceof ElevatorCallPacket) {
+					ElevatorCallPacket p = (ElevatorCallPacket)o;
 				}
 				else if(o instanceof NewPassengerPacket){
 					NewPassengerPacket p = (NewPassengerPacket)o;
@@ -52,8 +52,9 @@ public class Model{
 	}
 	
 	public static void main(String[] args){
-		System.out.println("model");
-		while(true) System.out.println("model");
+		System.out.println("...GÓRAL...");
+		Model model; 
+		try{model = new Model(1234);}catch(Exception e){}
 	}
 
 }
