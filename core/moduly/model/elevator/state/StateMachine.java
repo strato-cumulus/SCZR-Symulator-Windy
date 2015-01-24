@@ -57,7 +57,7 @@ public class StateMachine
 	{
 		if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()) {
 			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
-			elevatorCar.setY((elevatorCar.checkFloor()) * elevatorCar.getStage().getHeight() / MainStage.STOREY_NUM);
+			elevatorCar.setY((elevatorCar.checkFloor()) * elevatorCar.getStage().getHeight() / MainStage.stories);
 			return new ElevatorStill();
 		}
 		elevatorCar.setY(elevatorCar.getY() + elevatorCar.ELEVATOR_SPEED * delta);

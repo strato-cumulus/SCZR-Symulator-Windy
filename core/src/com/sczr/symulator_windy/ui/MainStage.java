@@ -22,8 +22,8 @@ import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
 public class MainStage extends Stage
 {
-	public static final int STOREY_NUM = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
-	public static final int ELEVATOR_X = 200;
+	int stories = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
+	int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
 	final UIModule uiModule;
@@ -64,16 +64,17 @@ public class MainStage extends Stage
 	//Date of Edition --
 	//Power Supply: CODEGEN 800W
 	
-	public MainStage(Skin skin, UIModule uiModule){	
-		storeyLabels = new Label[STOREY_NUM];	
-		peopleWaitingOnStorey = new int[STOREY_NUM];
+	public MainStage(Skin skin, UIModule uiModule, int stories, int shaftHeight){	
+		this.stories = stories;
+		storeyLabels = new Label[stories];	
+		peopleWaitingOnStorey = new int[stories];
 		this.uiModule = uiModule;
 		
 		
-		this.elevator = new ElevatorCar(this.uiModule, 60, (int) (getHeight()/STOREY_NUM) - 30, ELEVATOR_X);
+		this.elevator = new ElevatorCar(this.uiModule, 60, (int) (getHeight()/stories) - 30, ELEVATOR_X);
 		addActor(elevator);
 		
-		for(int i=0; i<STOREY_NUM; i++){
+		for(int i=0; i<stories; i++){
 			Label label = new Label("", skin);
 			label.setY((getFloorLevel(i) ) + 5);
 			addActor(label);
@@ -96,8 +97,8 @@ public class MainStage extends Stage
 		}
 		
 		ElevatorCallButton groundFloorButton = new ElevatorCallButton("^", skin, Direction.UP, 0);
-		ElevatorCallButton topFloorButton = new ElevatorCallButton("v", skin, Direction.DOWN, STOREY_NUM-1);
-		topFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(STOREY_NUM-1)+60);
+		ElevatorCallButton topFloorButton = new ElevatorCallButton("v", skin, Direction.DOWN, stories-1);
+		topFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(stories-1)+60);
 		groundFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(0)+45);
 		topFloorButton.addListener(new ElevatorButtonListener(4, Direction.DOWN));
 		groundFloorButton.addListener(new ElevatorButtonListener(0, Direction.UP));
@@ -106,7 +107,7 @@ public class MainStage extends Stage
 		callButtons.add(groundFloorButton);
 		callButtons.add(topFloorButton);
 		//przyciski na pietrach nieskrajnych
-		for(int i=1; i<STOREY_NUM - 1; i++){
+		for(int i=1; i<stories - 1; i++){
 			ElevatorCallButton up = new ElevatorCallButton("^", skin, Direction.UP, i);
 			ElevatorCallButton down = new ElevatorCallButton("v", skin, Direction.DOWN, i);
 			up.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+60);
@@ -139,7 +140,7 @@ public class MainStage extends Stage
 		shapeRenderer.setColor(Color.WHITE);
 		
 		//pietra
-		for(int i=0; i<STOREY_NUM; i++) {
+		for(int i=0; i<stories; i++) {
 			shapeRenderer.line(0, getFloorLevel(i), getWidth(), getFloorLevel(i));
 		}
 		
@@ -167,14 +168,14 @@ public class MainStage extends Stage
 		}
 		
 		peopleInsideLabel.setText("osoby w srodku windy: " + elevator.getNumberOfPeopleInside());
-		for(int i=0; i<STOREY_NUM; i++){
+		for(int i=0; i<stories; i++){
 			storeyLabels[i].setText("liczba oczekujacych: " + peopleWaitingOnStorey[i]);
 		}
 	}
 	
 	//podajesz pietro i zwraca ci na jakiej wysokosci w pixelach sie znajduje
 	private int getFloorLevel(int floor){
-		return (int) (floor*getHeight()/STOREY_NUM);
+		return (int) (floor*getHeight()/stories);
 	}
 	
 	class ElevatorButtonListener extends ChangeListener 
@@ -196,7 +197,7 @@ public class MainStage extends Stage
 			int randomValue;
 			
 			if(direction.equals(Direction.UP)) {
-				randomValue = Math.abs(random.nextInt() % (STOREY_NUM - story - 1)) + story + 1;
+				randomValue = Math.abs(random.nextInt() % (stories - story - 1)) + story + 1;
 			}
 			else {
 				randomValue = Math.abs(random.nextInt() % story);
