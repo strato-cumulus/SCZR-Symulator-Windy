@@ -8,7 +8,7 @@ import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.InitializeGUIPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
-import com.sczr.symulator_windy.packets.controllerpackets.FloorsStopElevatorPacket;
+import com.sczr.symulator_windy.packets.controllerpackets.ChangeDestinationFloorPacket;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
@@ -28,7 +28,7 @@ public class SerializationList
 
 		kryo.register(ElevatorCallPacket.class);
 
-		kryo.register(FloorsStopElevatorPacket.class);
+		kryo.register(ChangeDestinationFloorPacket.class);
 		kryo.register(ElevatorStatePacket.class);
 		kryo.register(GUIRegisterPacket.class);
 		kryo.register(InitializeGUIPacket.class);

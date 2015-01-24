@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import model.Model;
 import model.Passenger;
 import model.elevator.state.DoorStill;
 import model.elevator.state.ElevatorGoingDown;
@@ -15,17 +16,14 @@ import model.elevator.state.StateMachine;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 
 public class ElevatorCarModel{
-	
-	final int floorHeight;
-	final int numberOfFloors;
-	
+
 	public static final int ELEVATOR_HEIGHT =70;
 	public static final int ELEVATOR_WIDTH =30;
 	public final float DOOR_SPEED = 60;
-	public final float ELEVATOR_SPEED = 90;
+	public final float ELEVATOR_SPEED = 2;
 	
 
-	private int destinationFloor = 0;
+	private int destinationFloor = 2;
 	private float currentVerticalPosition = 0;
 	private float currentDoorWidth = ELEVATOR_WIDTH;
 	
@@ -36,23 +34,22 @@ public class ElevatorCarModel{
 	final ArrayList<Passenger> passengersInCar;
 	private StateMachine stateMachine;
 	
-	public ElevatorCarModel(int numberOfFloors, int floorHeight) {
+	public ElevatorCarModel() {
 		super();	
-		this.numberOfFloors = numberOfFloors;
 		this.stateMachine = new StateMachine(this);
 		this.doorState = new DoorStill();
 		this.elevatorState = new ElevatorGoingUp();
 		this.passengersInCar = new ArrayList<>();
-		this.floorHeight = floorHeight;
 
 	}
 	
 	public void actElevator(float delta) throws ElevatorStateException{
-		//super.act(delta);	
-
+		System.out.println(getCurrentDoorWidth());
+		System.out.println(getCurrentVericalPosition());
 		if(!elevatorState.getClass().equals(ElevatorStill.class) && !doorState.getClass().equals(DoorStill.class)) {
 			throw new ElevatorStateException();
 		}
+	
 		this.doorState = this.doorState.accept(this.stateMachine, delta);
 		this.elevatorState = this.elevatorState.accept(this.stateMachine, delta);
 	}
@@ -64,7 +61,7 @@ public class ElevatorCarModel{
 	
 	public int checkFloor()
 	{
-		return (int)(Math.floor(this.getCurrentVericalPosition() / floorHeight));
+		return (int)(Math.floor(this.getCurrentVericalPosition() / Model.FLOOR_HEIGHT));
 	}
 	
 	public void dispatch(int callFloor, int destinationFloor)

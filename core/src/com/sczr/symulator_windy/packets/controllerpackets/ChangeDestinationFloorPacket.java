@@ -4,15 +4,15 @@ import java.util.List;
 
 
 
-public class FloorsStopElevatorPacket 
+public class ChangeDestinationFloorPacket 
 {
 	private final int destination;
-	private final List<Integer> indirectStops;
+	//private final List<Integer> indirectStops;
 	
-	public FloorsStopElevatorPacket(final int destination, List<Integer> indirectStops)
+	public ChangeDestinationFloorPacket(final int destination)
 	{
 		this.destination = destination;
-		this.indirectStops = indirectStops;
+		//this.indirectStops = indirectStops;
 	}
 	
 	public int getDestination()
@@ -22,6 +22,6 @@ public class FloorsStopElevatorPacket
 	
 	public List<Integer> getIndirectStops()
 	{
-		return indirectStops;
+		return null;//return indirectStops; return
 	}
 }

@@ -16,6 +16,7 @@ public class StateMachine
 	{
 		if(elevatorCar.getWidth() >= ElevatorCarModel.ELEVATOR_WIDTH) {
 			elevatorCar.setWidth(ElevatorCarModel.ELEVATOR_WIDTH);
+			System.out.println("zakonczono zamykanie dzrwi");
 			return new DoorStill();
 		}
 		elevatorCar.setWidth(elevatorCar.getWidth() + elevatorCar.DOOR_SPEED * delta);
@@ -26,6 +27,7 @@ public class StateMachine
 	{
 		if(elevatorCar.getWidth() <= 0) {
 			elevatorCar.setWidth(0); 
+			System.out.println("zakonczono otwieranie dzrwi");
 			return new DoorStill();
 		}
 		elevatorCar.setWidth(elevatorCar.getWidth() - elevatorCar.DOOR_SPEED * delta);
@@ -36,11 +38,7 @@ public class StateMachine
 	{
 		return state;
 	}
-	
-	
-	/* WPIERDOL TUTAJ handleFloor() !!!*/
-	
-	/*TODO*/
+
 	State nextState(ElevatorGoingDown state, float delta)
 	{
 		if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor()) {

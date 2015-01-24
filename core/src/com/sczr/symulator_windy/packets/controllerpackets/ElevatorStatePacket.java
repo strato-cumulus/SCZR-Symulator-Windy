@@ -1,40 +1,40 @@
 package com.sczr.symulator_windy.packets.controllerpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.elevator.state.State;
 
 import com.sczr.symulator_windy.packets.Packet;
-import com.sun.istack.internal.FinalArrayList;
 
 
 
 public class ElevatorStatePacket extends Packet
 {
-	private final int[] upButtons;
-	private final int[] downButtons;
+	private ArrayList<Integer> upButtons;
+	private ArrayList<Integer> downButtons;
 	private final List<Integer> passangersDestinations;
 	private final State elevatorState;
 	private final int currentFloor;
 	
-	public ElevatorStatePacket(final int[] upButtons, final int[] downButtons, final int currentFloor,
+	public ElevatorStatePacket(ArrayList<Integer>upButtonsClicked, ArrayList<Integer >downButtonsClicked, final int currentFloor,
 								List<Integer> passengersDestinations, State elevatorState)
 	{
-		this.upButtons = upButtons;
-		this.downButtons = downButtons;
+		this.upButtons = upButtonsClicked;
+		this.downButtons = downButtonsClicked;
 		this.passangersDestinations = passengersDestinations;
 		this.elevatorState = elevatorState;
 		this.currentFloor = currentFloor;
 	}
 	
-	public int[] getUpButtons()
+	public Integer[] getUpButtons()
 	{
-		return upButtons;
+		return (Integer[])upButtons.toArray();
 	}
 	
-	public int[] getDownButtons()
+	public Integer[] getDownButtons()
 	{
-		return downButtons;
+		return(Integer[]) downButtons.toArray();
 	}
 	
 	public List<Integer> getDestinations()

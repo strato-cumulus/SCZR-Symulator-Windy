@@ -12,9 +12,9 @@ import model.elevator.state.State;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.sczr.symulator_windy.packets.controllerpackets.ChangeDestinationFloorPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
-import com.sczr.symulator_windy.packets.controllerpackets.FloorsStopElevatorPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
 public class Controler 
@@ -38,7 +38,7 @@ public class Controler
 	        {
 	        	if (object instanceof ElevatorStatePacket) 
 	        	{
-	        		FloorsStopElevatorPacket packet = handleElevator((ElevatorStatePacket)object);
+	        		ChangeDestinationFloorPacket packet = handleElevator((ElevatorStatePacket)object);
 	        		connection.sendTCP(packet);
 	        	}
 	        } 
@@ -63,11 +63,12 @@ public class Controler
 
 	}
 	
-	private FloorsStopElevatorPacket handleElevator(ElevatorStatePacket packet)
+	private ChangeDestinationFloorPacket handleElevator(ElevatorStatePacket packet)
 	{
+		int nextFloorToStop = -1;
 		State elevatorState = packet.getElevatorState();
-		int[] upButtons = packet.getUpButtons();
-		int[] downButtons = packet.getDownButtons();
+		Integer[] upButtons = packet.getUpButtons();
+		Integer[] downButtons = packet.getDownButtons();
 		List<Integer> passengersDestinations = packet.getDestinations();
 		int currentFloor = packet.getCurrentFloor();
 		
@@ -101,6 +102,6 @@ public class Controler
 		{
 			
 		}
-		return new FloorsStopElevatorPacket(1, stops);
+		return new ChangeDestinationFloorPacket(nextFloorToStop);
 	}
 }

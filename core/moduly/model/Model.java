@@ -1,6 +1,7 @@
 package model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,6 +10,7 @@ import model.elevator.ElevatorCarModel;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.sczr.symulator_windy.exception.ElevatorStateException;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.ElevatorStateInfoPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
@@ -26,16 +28,17 @@ public class Model{
 	public static final int FLOOR_HEIGHT = 90;
 	public static final int GUI_REFRESH_RATE = 100;
 	public static final int CONTROLLER_REFRESH_RATE = 25;
+	public static final int MODEL_REFRESH_RATE = 25;
 
 	private final Server server;
-	private final ElevatorCarModel elevatorCar = new ElevatorCarModel(NUMBER_OF_FLOORS, FLOOR_HEIGHT);
+	private final ElevatorCarModel elevatorCar = new ElevatorCarModel();
 	private Floor[] floors = new Floor[NUMBER_OF_FLOORS];
 	
 	private int guiConnectionId = -1;
 	private int controllerConnectionId = -1;
 	
-	private int[] upButtons = new int[NUMBER_OF_FLOORS-1];
-	private int[] downButtons = new int[NUMBER_OF_FLOORS-1];
+	private boolean[] upButtons = new boolean[NUMBER_OF_FLOORS-1];
+	private boolean[] downButtons = new boolean[NUMBER_OF_FLOORS-1];
 	
 	
 	public Model(int tcpPort) throws IOException{
@@ -95,14 +98,26 @@ public class Model{
 			@Override
 			public void run() {
 				server.sendToTCP(controllerConnectionId, 
-						new ElevatorStatePacket(upButtons, 
-								downButtons, 
+						new ElevatorStatePacket(getUpButtonsClicked(), 
+								getDownButtonsClicked(), 
 								elevatorCar.checkFloor(), 
 								elevatorCar.getPassangerDestinations(), 
 								elevatorCar.elevatorState));
 			}
 		}, 0, CONTROLLER_REFRESH_RATE);
 		
+        timer.scheduleAtFixedRate(new TimerTask() {
+			
+			@Override
+			public void run() {
+				try {
+					elevatorCar.actElevator(MODEL_REFRESH_RATE);
+				} catch (ElevatorStateException e) {
+					e.printStackTrace();
+				}
+			}
+		}, 0, MODEL_REFRESH_RATE);
+        
 	}
 	
 	public static void main(String[] args){
@@ -116,6 +131,24 @@ public class Model{
 			System.exit(1);
 		}
 		
+	}
+	
+	private ArrayList<Integer> getUpButtonsClicked(){
+		ArrayList<Integer> clicked = new ArrayList<>();
+		for(int i=0; i<upButtons.length; i++){
+			if(upButtons[i]==true)
+				clicked.add(i);
+		}
+		return clicked;
+	}
+	
+	private ArrayList<Integer> getDownButtonsClicked(){
+		ArrayList<Integer> clicked = new ArrayList<>();
+		for(int i=0; i<downButtons.length; i++){
+			if(downButtons[i]==true)
+				clicked.add(i);
+		}
+		return clicked;
 	}
 
 }
