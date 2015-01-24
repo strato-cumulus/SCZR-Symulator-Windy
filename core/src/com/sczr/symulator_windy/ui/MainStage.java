@@ -105,20 +105,20 @@ public class MainStage extends Stage
 					client.sendTCP(new NewPassengerPacket(lastClientID++, Math.abs(random.nextInt() % stories), Integer.parseInt(event.getListenerActor().getName())));
 				}
 			});
-			
-			client.addListener(new Listener() {
-				@Override
-				public void received(Connection c, Object o) {			
-					if (o instanceof NewPassengerPacket) {
-						System.out.println("gui pas");
-						if(((NewPassengerPacket)o).floor > stories) {
-							return;
-						}
-						peopleWaitingOnStorey[((NewPassengerPacket)o).floor] += 1;
-					}
-				}
-			});
 		}
+		
+		client.addListener(new Listener() {
+			@Override
+			public void received(Connection c, Object o) {			
+				if (o instanceof NewPassengerPacket) {
+					System.out.println("gui pas");
+					if(((NewPassengerPacket)o).floor > stories) {
+						return;
+					}
+					peopleWaitingOnStorey[((NewPassengerPacket)o).floor] += 1;
+				}
+			}
+		});
 		
 		ElevatorCallButton groundFloorButton = new ElevatorCallButton("^", skin, Direction.UP, 0);
 		ElevatorCallButton topFloorButton = new ElevatorCallButton("v", skin, Direction.DOWN, stories-1);

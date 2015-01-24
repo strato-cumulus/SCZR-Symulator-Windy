@@ -56,10 +56,10 @@ public class Model{
 					ElevatorCallPacket p = (ElevatorCallPacket)o;
 				}
 				else if(o instanceof NewPassengerPacket){
-					NewPassengerPacket p = (NewPassengerPacket)o;
-					System.out.println("dodano nowego pasazera");
+					NewPassengerPacket p = (NewPassengerPacket)o;		
 					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination));
 					server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
+					System.out.println("dodano nowego pasazera");
 				}				
 				//modul sterowania
 				else if(o instanceof ControllerRegisterPacket){
