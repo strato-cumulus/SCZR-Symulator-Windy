@@ -9,7 +9,10 @@ public class ElevatorStateInfoPacket extends Packet
 	public final Float verticalPosition;
 	public final Float doorWidth;
 	
-	
+	public ElevatorStateInfoPacket() {
+		verticalPosition = null;
+		doorWidth = null;
+	}
 	
 	public ElevatorStateInfoPacket(Float doorWidth, Float verticalPosition)
 	{

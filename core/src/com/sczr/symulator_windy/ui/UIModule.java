@@ -61,7 +61,13 @@ public class UIModule
 			client.connect(50, "127.0.0.1", 1234);
 		} catch (IOException e) { e.printStackTrace(); }
 		
-		InitializeGUIPacket p = bq.poll();
+		InitializeGUIPacket p;
+		try {
+			p = bq.take();
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+			p = null;
+		} 
 
 		this.mainStage = new MainStage(skinAtlas.getSkin(), p.storeyNumber, p.storeyHeight);
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
