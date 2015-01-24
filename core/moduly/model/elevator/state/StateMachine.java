@@ -1,22 +1,21 @@
 package model.elevator.state;
 
-import model.elevator.ElevatorCar;
-
-import com.sczr.symulator_windy.ui.MainStage;
+import model.Model;
+import model.elevator.ElevatorCarModel;
 
 public class StateMachine 
 {
-	private ElevatorCar elevatorCar;
+	private ElevatorCarModel elevatorCar;
 	
-	public StateMachine(ElevatorCar elevatorCar)
+	public StateMachine(ElevatorCarModel elevatorCar)
 	{
 		this.elevatorCar = elevatorCar;
 	}
 	
 	State nextState(DoorClosing state, float delta)
 	{
-		if(elevatorCar.getWidth() >= ElevatorCar.ELEVATOR_WIDTH) {
-			elevatorCar.setWidth(ElevatorCar.ELEVATOR_WIDTH);
+		if(elevatorCar.getWidth() >= ElevatorCarModel.ELEVATOR_WIDTH) {
+			elevatorCar.setWidth(ElevatorCarModel.ELEVATOR_WIDTH);
 			return new DoorStill();
 		}
 		elevatorCar.setWidth(elevatorCar.getWidth() + elevatorCar.DOOR_SPEED * delta);
@@ -57,7 +56,7 @@ public class StateMachine
 	{
 		if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()) {
 			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
-			elevatorCar.setY((elevatorCar.checkFloor()) * elevatorCar.getStage().getHeight() / MainStage.getStoreyCount());
+			elevatorCar.setY((elevatorCar.checkFloor()) * Model.FLOOR_HEIGHT);
 			return new ElevatorStill();
 		}
 		elevatorCar.setY(elevatorCar.getY() + elevatorCar.ELEVATOR_SPEED * delta);

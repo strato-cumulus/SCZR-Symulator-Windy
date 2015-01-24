@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import model.elevator.ElevatorCar;
+import model.elevator.ElevatorCarModel;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -13,6 +13,8 @@ import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.ElevatorStateInfoPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.InitializeGUIPacket;
+import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
+import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
@@ -24,12 +26,17 @@ public class Model{
 	public static final int NUMBER_OF_FLOORS = 10;
 	public static final int FLOOR_HEIGHT = 90;
 	public static final int GUI_REFRESH_RATE = 100;
+	public static final int CONTROLLER_REFRESH_RATE = 25;
 
 	private final Server server;
-	private final ElevatorCar elevatorCar = new ElevatorCar(NUMBER_OF_FLOORS, FLOOR_HEIGHT);
+	private final ElevatorCarModel elevatorCar = new ElevatorCarModel(NUMBER_OF_FLOORS, FLOOR_HEIGHT);
 	private Floor[] floors = new Floor[NUMBER_OF_FLOORS];
 	
-	private int GUIConnectionId = -1;
+	private int guiConnectionId = -1;
+	private int controllerConnectionId = -1;
+	
+	private int[] upButtons = new int[NUMBER_OF_FLOORS-1];
+	private int[] downButtons = new int[NUMBER_OF_FLOORS-1];
 	
 	
 	public Model(int tcpPort) throws IOException{
@@ -51,10 +58,13 @@ public class Model{
 					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination));
 				}				
 				//modul sterowania
-				
+				else if(o instanceof ControllerRegisterPacket){
+					controllerConnectionId = c.getID();
+					System.out.println("rejestracja kontrolera");
+				}
 				//modul gui
 				else if(o instanceof GUIRegisterPacket){
-					GUIConnectionId = c.getID();
+					guiConnectionId = c.getID();
 					System.out.println("rejestracja gui");
 					c.sendTCP(new InitializeGUIPacket(NUMBER_OF_FLOORS, FLOOR_HEIGHT, elevatorCar.ELEVATOR_WIDTH));
 				}
@@ -71,20 +81,31 @@ public class Model{
 			
 			@Override
 			public void run() {
-				server.sendToTCP(GUIConnectionId, 
-						new ElevatorStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentHeight()));
+				server.sendToTCP(guiConnectionId, 
+						new ElevatorStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentVericalPosition()));
 			}
 		}, 0, GUI_REFRESH_RATE);
+        
+        timer.scheduleAtFixedRate(new TimerTask() {
+			
+			@Override
+			public void run() {
+				server.sendToTCP(controllerConnectionId, 
+						new ElevatorStatePacket(upButtons, 
+								downButtons, 
+								elevatorCar.checkFloor(), 
+								elevatorCar.getPassangerDestinations(), 
+								elevatorCar.elevatorState));
+			}
+		}, 0, CONTROLLER_REFRESH_RATE);
 		
 	}
 	
 	public static void main(String[] args){
 		System.out.println("...GÓRAL...");
-		Model model; 
-		
 		
 		try{
-			model = new Model(1234);
+			new Model(1234);
 		}
 		catch(Exception e){
 			e.printStackTrace(); 
