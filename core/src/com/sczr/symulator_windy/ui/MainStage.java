@@ -15,8 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket;
+import com.sczr.symulator_windy.packets.ElevatorCoordinatesPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
@@ -145,7 +147,7 @@ public class MainStage extends Stage
 		
 		//szyb windy
 		shapeRenderer.line(ELEVATOR_X, 0, ELEVATOR_X, getHeight());
-		shapeRenderer.line(ELEVATOR_X + elevator.ELEVATOR_WIDTH, 0, ELEVATOR_X + elevator.ELEVATOR_HEIGHT, getHeight());
+		shapeRenderer.line(ELEVATOR_X + elevator.ELEVATOR_WIDTH, 0, ELEVATOR_X + elevator.ELEVATOR_WIDTH, getHeight());
 		shapeRenderer.end();
 		
 		//winda
@@ -203,4 +205,19 @@ public class MainStage extends Stage
 			System.out.println("Sending call from floor " + this.story + " to floor " + randomValue);
 		}
 	}	
+	
+	class PositionUpdateListener extends Listener
+	{
+		@Override
+		public void received(Connection c, Object o)
+		{
+			this.update(o);
+		}
+		
+		void update(Object o) {};
+		void update(ElevatorCoordinatesPacket packet)
+		{
+			elevator.update(packet.verticalPosition, packet.doorWidth);
+		}
+	}
 }
