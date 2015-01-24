@@ -2,13 +2,15 @@ package controlmodule;
 
 import java.io.IOException;
 
-import javax.tools.Diagnostic;
+import model.Floor;
+import model.state.State;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.ElevatorStatePacket;
+import com.sczr.symulator_windy.packets.FloorsStopElevatorPacket;
 import com.sczr.symulator_windy.packets.Packet;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
@@ -40,10 +42,15 @@ public class ControlerClient
 	        {
 	        	if (object instanceof ElevatorStatePacket) 
 	        	{
-	        		DispatchElevatorPacket packet = new DispatchElevatorPacket(1, 1);
+	        		FloorsStopElevatorPacket packet = handleElevator((ElevatorStatePacket)object);
 	        		connection.sendTCP(packet);
 	        	}
 	        } 
 	     });
+	}
+	
+	private FloorsStopElevatorPacket handleElevator(ElevatorStatePacket packet)
+	{
+		return new FloorsStopElevatorPacket(destination, indirectStops)
 	}
 }
