@@ -16,7 +16,7 @@ public class PassengerClient {
 	protected final Client client;
 	private final Random rand = new Random();
 	private int lastId;
-	public final int GENERATION_DELAY = 4000;
+	public final int GENERATION_DELAY = 15000;
 	
 	public PassengerClient(int tcpPort, String ipAddress )
 	{	
