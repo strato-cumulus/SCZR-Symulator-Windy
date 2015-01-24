@@ -1,6 +1,9 @@
 package com.sczr.symulator_windy.packets;
 
 import java.util.List;
+
+import com.sun.istack.internal.FinalArrayList;
+
 import model.state.State;
 
 public class ElevatorStatePacket extends Packet
@@ -8,14 +11,17 @@ public class ElevatorStatePacket extends Packet
 	private final int[] upButtons;
 	private final int[] downButtons;
 	private final List<Integer> passangersDestinations;
-	private State elevatorState;
+	private final State elevatorState;
+	private final int currentFloor;
 	
-	public ElevatorStatePacket(final int[] upButtons, final int[] downButtons, List<Integer> passengersDestinations, State elevatorState)
+	public ElevatorStatePacket(final int[] upButtons, final int[] downButtons, final int currentFloor,
+								List<Integer> passengersDestinations, State elevatorState)
 	{
 		this.upButtons = upButtons;
 		this.downButtons = downButtons;
 		this.passangersDestinations = passengersDestinations;
 		this.elevatorState = elevatorState;
+		this.currentFloor = currentFloor;
 	}
 	
 	public int[] getUpButtons()
@@ -36,5 +42,10 @@ public class ElevatorStatePacket extends Packet
 	public State getElevatorState()
 	{
 		return elevatorState;
+	}
+	
+	public int getCurrentFloor()
+	{
+		return currentFloor;
 	}
 }

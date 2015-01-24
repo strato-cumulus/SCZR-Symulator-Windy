@@ -14,8 +14,8 @@ public class ControlModule
 		adress = input.nextLine();
 		System.out.println("Podaj port:");
 		port = input.nextInt();
-		ControlerClient controlerClient = new ControlerClient(port, adress);
-		controlerClient.runControler();
+		Controler controler = new Controler(port, adress);
+		controler.runControler();
 
 		
 		System.out.println("ControlModule elo");

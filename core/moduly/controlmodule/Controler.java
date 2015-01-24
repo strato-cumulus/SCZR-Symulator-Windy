@@ -1,8 +1,13 @@
 package controlmodule;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import model.Floor;
+import model.state.ElevatorGoingDown;
+import model.state.ElevatorGoingUp;
+import model.state.ElevatorStill;
 import model.state.State;
 
 import com.esotericsoftware.kryonet.Client;
@@ -14,12 +19,12 @@ import com.sczr.symulator_windy.packets.FloorsStopElevatorPacket;
 import com.sczr.symulator_windy.packets.Packet;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
-public class ControlerClient 
+public class Controler 
 {
 	
 	private final Client client;
 	
-	public ControlerClient(int tcpPort, String IPAdress)
+	public Controler(int tcpPort, String IPAdress)
 	{
 		this.client = new Client();
 		this.client.start();
@@ -51,6 +56,24 @@ public class ControlerClient
 	
 	private FloorsStopElevatorPacket handleElevator(ElevatorStatePacket packet)
 	{
-		return new FloorsStopElevatorPacket(destination, indirectStops)
+		State elevatorState = packet.getElevatorState();
+		int[] upButtons = packet.getUpButtons();
+		int[] downButtons = packet.getDownButtons();
+		List<Integer> passengersDestinations = packet.getDestinations();
+		
+		List<Integer> stops = new LinkedList<Integer>();
+		if(elevatorState instanceof ElevatorStill)
+		{
+			
+		}
+		if(elevatorState instanceof ElevatorGoingDown)
+		{
+			
+		}
+		if(elevatorState instanceof ElevatorGoingUp)
+		{
+			
+		}
+		return new FloorsStopElevatorPacket(1, stops);
 	}
 }
