@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 
+
 public class Model{
 
  private final Server server;

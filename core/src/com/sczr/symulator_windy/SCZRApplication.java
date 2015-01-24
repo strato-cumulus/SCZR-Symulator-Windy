@@ -5,18 +5,13 @@ import java.io.IOException;
 import model.Model;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.sczr.symulator_windy.controller.ElevatorController;
-import com.sczr.symulator_windy.modules.randompassengers.RandomPassengersModule;
 import com.sczr.symulator_windy.ui.UIModule;
 
 public class SCZRApplication extends ApplicationAdapter
 {
 	public static int windowWidth, windowHeight;
 
-	ElevatorController     controller;
-	
 	Model controllerModule;
-	RandomPassengersModule passengersModule;
 	UIModule               uiModule;
 	
 	public SCZRApplication(int windowWidth, int windowHeight)
@@ -29,13 +24,9 @@ public class SCZRApplication extends ApplicationAdapter
 	public void create ()
 	{	
 		try {
-			controller = new ElevatorController(49980);
 			controllerModule = new Model(50060);
-			passengersModule = new RandomPassengersModule(50070);
 			uiModule = new UIModule(50120, windowWidth, windowHeight);
 			//controller.register(controllerModule);
-			controller.register(passengersModule);
-			controller.register(uiModule);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}

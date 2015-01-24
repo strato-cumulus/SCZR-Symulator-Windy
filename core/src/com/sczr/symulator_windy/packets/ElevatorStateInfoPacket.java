@@ -1,6 +1,6 @@
 package com.sczr.symulator_windy.packets;
 
-import com.sczr.symulator_windy.ui.elevator.State;
+import model.state.State;
 
 public class ElevatorStateInfoPacket extends Packet
 {

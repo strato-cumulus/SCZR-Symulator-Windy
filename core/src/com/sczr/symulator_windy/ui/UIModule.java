@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.sczr.symulator_windy.modules.Module;
 import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.Packet;
 
