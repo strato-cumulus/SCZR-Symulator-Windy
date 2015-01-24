@@ -6,11 +6,16 @@ public class RandomCreatingOfPassengers {
 
 	Random rand = new Random();
 	
-	private final int createID()
+	Passenger createRandomPassenger(int LAST_ID)
 	{
+		final int ID = LAST_ID + 1;
+		int floor = rand.nextInt(10);
+		int destination = rand.nextInt(10);
+		if (floor == destination) destination = destination + 3;
 		
-		id += 1 % 1000;
-		return id;
+		Passenger newpassenger = new Passenger(ID,destination,floor);
+		return newpassenger;
+		
 	}
 	
 	
