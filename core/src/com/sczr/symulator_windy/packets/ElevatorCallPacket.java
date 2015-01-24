@@ -1,6 +1,5 @@
 package com.sczr.symulator_windy.packets;
 
-import com.sczr.symulator_windy.state.Direction;
 
 public class ElevatorCallPacket extends Packet
 {

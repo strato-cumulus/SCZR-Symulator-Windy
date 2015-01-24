@@ -1,22 +1,22 @@
-package com.sczr.symulator_windy.ui.elevator;
+package model.state;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import model.elevator.ElevatorCar;
 
 import com.sczr.symulator_windy.ui.MainStage;
 
-class StateMachine 
+public class StateMachine 
 {
 	private ElevatorCar elevatorCar;
 	
-	StateMachine(ElevatorCar elevatorCar)
+	public StateMachine(ElevatorCar elevatorCar)
 	{
 		this.elevatorCar = elevatorCar;
 	}
 	
 	State nextState(DoorClosing state, float delta)
 	{
-		if(elevatorCar.getWidth() >= elevatorCar.ELEVATOR_WIDTH) {
-			elevatorCar.setWidth(elevatorCar.ELEVATOR_WIDTH);
+		if(elevatorCar.getWidth() >= ElevatorCar.ELEVATOR_WIDTH) {
+			elevatorCar.setWidth(ElevatorCar.ELEVATOR_WIDTH);
 			return new DoorStill();
 		}
 		elevatorCar.setWidth(elevatorCar.getWidth() + elevatorCar.DOOR_SPEED * delta);

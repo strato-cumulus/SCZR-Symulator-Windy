@@ -3,11 +3,14 @@ package com.sczr.symulator_windy.ui;
 import java.util.ArrayList;
 import java.util.Random;
 
+import model.Passenger;
+import model.PassengerState;
+import model.elevator.ElevatorCar;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -18,12 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
-import com.sczr.symulator_windy.state.Direction;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
-import com.sczr.symulator_windy.ui.elevator.ElevatorCar;
-import com.sczr.symulator_windy.ui.elevator.Floor;
-import com.sczr.symulator_windy.ui.passengers.Passenger;
-import com.sczr.symulator_windy.ui.passengers.PassengerState;
+import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
 public class MainStage extends Stage
 {
@@ -31,7 +30,7 @@ public class MainStage extends Stage
 	public static final int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
-	final Floor[] floors = new Floor[STOREY_NUM];
+	
 	final UIModule uiModule;
 	
 	int peopleWaitingOnStorey[];
@@ -204,6 +203,7 @@ public class MainStage extends Stage
 			this.random = new Random();
 		}
 		
+		@Override
 		public void changed(ChangeEvent e, Actor a)
 		{
 			int randomValue;

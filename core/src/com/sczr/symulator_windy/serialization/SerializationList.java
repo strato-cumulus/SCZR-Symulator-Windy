@@ -5,7 +5,7 @@ import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.ElevatorStateInfoPacket;
 import com.sczr.symulator_windy.packets.Packet;
-import com.sczr.symulator_windy.state.Direction;
+import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
 public class SerializationList 
 {
