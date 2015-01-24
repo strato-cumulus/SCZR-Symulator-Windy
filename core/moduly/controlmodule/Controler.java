@@ -57,11 +57,29 @@ public class Controler
 		int[] upButtons = packet.getUpButtons();
 		int[] downButtons = packet.getDownButtons();
 		List<Integer> passengersDestinations = packet.getDestinations();
+		int currentFloor = packet.getCurrentFloor();
 		
+		int prevdestination;
+		int destination;
 		List<Integer> stops = new LinkedList<Integer>();
+		
 		if(elevatorState instanceof ElevatorStill)
 		{
-			
+			if(currentFloor != 0)
+			{
+				for(int i = 0; i<10; i++)
+				{
+					if(upButtons[i] == 1)
+					{
+						destination = i;
+					}
+				}
+			}
+			if(currentFloor == 0)
+			{
+				
+			}
+				
 		}
 		if(elevatorState instanceof ElevatorGoingDown)
 		{
