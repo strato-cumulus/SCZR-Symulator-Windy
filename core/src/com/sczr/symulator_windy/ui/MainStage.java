@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
@@ -26,7 +25,6 @@ public class MainStage extends Stage
 	public static final int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
-	final UIModule uiModule;
 	
 	int peopleWaitingOnStorey[];
 	
@@ -64,13 +62,12 @@ public class MainStage extends Stage
 	//Date of Edition --
 	//Power Supply: CODEGEN 800W
 	
-	public MainStage(Skin skin, UIModule uiModule){	
+	public MainStage(Skin skin){	 
 		storeyLabels = new Label[STOREY_NUM];	
 		peopleWaitingOnStorey = new int[STOREY_NUM];
-		this.uiModule = uiModule;
 		
 		
-		this.elevator = new ElevatorCar(this.uiModule, 60, (int) (getHeight()/STOREY_NUM) - 30, ELEVATOR_X);
+		this.elevator = new ElevatorCar(60, (int) (getHeight()/STOREY_NUM) - 30, ELEVATOR_X);
 		addActor(elevator);
 		
 		for(int i=0; i<STOREY_NUM; i++){
@@ -202,7 +199,7 @@ public class MainStage extends Stage
 				randomValue = Math.abs(random.nextInt() % story);
 			}
 			System.out.println("Sending call from floor " + this.story + " to floor " + randomValue);
-			uiModule.client.sendTCP(new ElevatorCallPacket(story, random.nextInt()));
+			//uiModule.client.sendTCP(new ElevatorCallPacket(story, random.nextInt()));
 		}
 	}	
 }
