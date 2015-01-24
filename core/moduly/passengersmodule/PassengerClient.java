@@ -1,11 +1,10 @@
 package passengersmodule;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-import com.sczr.symulator_windy.packets.ElevatorStatePacket;
+import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
 public class PassengerClient {
@@ -29,17 +28,19 @@ public class PassengerClient {
 	
 	void startPassengerClient()
 	{
-		
-	
-		client.addListener(new Listener()
+		Passenger newPassenger;
+		int LAST_ID = 0;
+		while(true)
 		{
-		    public void received(Connection connection, Object object)
-		    {
-		        if(object instanceof ElevatorStatePacket)
-		        {
-		           
-		        } 
-		    }
-		});
+			RandomCreatingOfPassengers create = new RandomCreatingOfPassengers();
+			newPassenger = create.createRandomPassenger(LAST_ID);
+			NewPassengerPacket passengerPacket = new NewPassengerPacket(newPassenger.getID(), newPassenger.getDestination(), newPassenger.getFloor());
+			client.sendTCP(passengerPacket);
+			try {
+				TimeUnit.SECONDS.sleep(2);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
