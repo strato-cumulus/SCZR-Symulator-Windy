@@ -15,14 +15,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
+import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
 public class MainStage extends Stage
 {
+	private Client client;
+	
+	private static int lastClientID = 0;
+	
 	static int stories;//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
 	static int ELEVATOR_X = 200;
+	static int storeyHeight;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
 	
@@ -62,12 +71,17 @@ public class MainStage extends Stage
 	//Date of Edition --
 	//Power Supply: CODEGEN 800W
 	
-	public MainStage(Skin skin, int storeyCount, int storeyHeight, int elevatorWidth){	 
+	public MainStage(Skin skin, int storeyCount, int storeyHeight, int elevatorWidth, Client client)
+	{	 
+		this.client = client;
 		stories = storeyCount;
 		storeyLabels = new Label[stories];	
 		peopleWaitingOnStorey = new int[stories];
+		MainStage.storeyHeight = storeyHeight;
 
-		this.elevator = new ElevatorCar(elevatorWidth, (int) (getHeight()/stories) - 30, ELEVATOR_X);
+		storeyHeight = (int) this.getHeight() / storeyCount;
+		
+		this.elevator = new ElevatorCar(elevatorWidth, storeyHeight, ELEVATOR_X);
 		addActor(elevator);
 		this.listener = new PositionUpdateListener(elevator);
 		
@@ -86,17 +100,28 @@ public class MainStage extends Stage
 				
 				@Override
 				public void clicked(InputEvent event, float x, float y){
-					//TODO wysylac informacje o tym ze ktos kliknal \
-					peopleWaitingOnStorey[Integer.parseInt(event.getListenerActor().getName())]+=1;
-					//System.out.println("dodano osobe na pietrze: " + event.getListenerActor().getName());
+					Random random = new Random();
+					//peopleWaitingOnStorey[Integer.parseInt(event.getListenerActor().getName())]+=1;
+					client.sendTCP(new NewPassengerPacket(lastClientID++, Integer.parseInt(event.getListenerActor().getName()), random.nextInt()));
+				}
+			});
+			
+			client.addListener(new Listener() {
+				public void received(Connection c, Object o) {
+					if (o instanceof NewPassengerPacket) {
+						if(((NewPassengerPacket)o).floor > stories) {
+							return;
+						}
+						peopleWaitingOnStorey[((NewPassengerPacket)o).floor] += 1;
+					}
 				}
 			});
 		}
 		
 		ElevatorCallButton groundFloorButton = new ElevatorCallButton("^", skin, Direction.UP, 0);
 		ElevatorCallButton topFloorButton = new ElevatorCallButton("v", skin, Direction.DOWN, stories-1);
-		topFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(stories-1)+60);
-		groundFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(0)+45);
+		topFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, (stories * storeyHeight) - (storeyHeight / 2));
+		groundFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, storeyHeight / 2);
 		topFloorButton.addListener(new ElevatorButtonListener(4, Direction.DOWN));
 		groundFloorButton.addListener(new ElevatorButtonListener(0, Direction.UP));
 		
@@ -104,15 +129,16 @@ public class MainStage extends Stage
 		callButtons.add(groundFloorButton);
 		callButtons.add(topFloorButton);
 		//przyciski na pietrach nieskrajnych
-		for(int i=1; i<stories - 1; i++){
-			ElevatorCallButton up = new ElevatorCallButton("^", skin, Direction.UP, i);
-			ElevatorCallButton down = new ElevatorCallButton("v", skin, Direction.DOWN, i);
-			up.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+storeyHeight*0.66f);
-			down.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+storeyHeight*0.33f);
+		for(int i = storeyHeight, buttonCount = 1; i < (stories - 1) * storeyHeight; i += storeyHeight){
+			ElevatorCallButton up = new ElevatorCallButton("^", skin, Direction.UP, buttonCount);
+			ElevatorCallButton down = new ElevatorCallButton("v", skin, Direction.DOWN, buttonCount);
+			up.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, i + storeyHeight / 2);
+			down.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, i + storeyHeight / 4);
 			callButtons.add(up);
 			callButtons.add(down);
-			up.addListener(new ElevatorButtonListener(i, Direction.UP));
-			down.addListener(new ElevatorButtonListener(i, Direction.DOWN));
+			up.addListener(new ElevatorButtonListener(buttonCount, Direction.UP));
+			down.addListener(new ElevatorButtonListener(buttonCount, Direction.DOWN));
+			buttonCount++;
 		}
 		for (ElevatorCallButton elevatorCallButton : callButtons) {
 			addActor(elevatorCallButton);	
