@@ -8,11 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.kryonet.Client;
+import com.sczr.symulator_windy.serialization.SerializationList;
 
 
 public class UIModule
 {
-	private Client client;
+	Client client;
 	private final SkinAtlas skinAtlas;
 	private final ConnectionStage connectionStage;
 	private final MainStage mainStage;
@@ -28,11 +29,13 @@ public class UIModule
 		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
 		this.setStage(mainStage);
 		
+		this.client = new Client();
 		client.start();
 		try {
 			client.connect(50, "127.0.0.1", 1234);
-		} catch (IOException e) { }
+		} catch (IOException e) { e.printStackTrace(); }
 		client.addListener(mainStage.listener);
+		SerializationList.register(client.getKryo());
 		
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
