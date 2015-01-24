@@ -1,6 +1,8 @@
-package com.sczr.symulator_windy.packets;
+package com.sczr.symulator_windy.packets.controllerpackets;
 
 import java.util.List;
+
+import com.sczr.symulator_windy.packets.Packet;
 
 public class ElevatorStatePacket extends Packet
 {

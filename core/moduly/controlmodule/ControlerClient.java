@@ -8,8 +8,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.packets.DispatchElevatorPacket_;
-import com.sczr.symulator_windy.packets.ElevatorStatePacket;
 import com.sczr.symulator_windy.packets.Packet;
+import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
 public class ControlerClient 
