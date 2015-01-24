@@ -10,6 +10,7 @@ public class ElevatorStateInfoPacket extends Packet
 	public final Float doorWidth;
 	
 	
+	
 	public ElevatorStateInfoPacket(Float doorWidth, Float verticalPosition)
 	{
 		this.verticalPosition = verticalPosition;

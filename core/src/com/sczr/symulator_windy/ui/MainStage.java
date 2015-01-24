@@ -22,8 +22,8 @@ import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
 public class MainStage extends Stage
 {
-	int stories = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
-	int ELEVATOR_X = 200;
+	static int stories = 5;	//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
+	static int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
 	final UIModule uiModule;
@@ -64,8 +64,8 @@ public class MainStage extends Stage
 	//Date of Edition --
 	//Power Supply: CODEGEN 800W
 	
-	public MainStage(Skin skin, UIModule uiModule, int stories, int shaftHeight){	
-		this.stories = stories;
+	public MainStage(Skin skin, UIModule uiModule, int stories, int storeyHeight){	
+		MainStage.stories = stories;
 		storeyLabels = new Label[stories];	
 		peopleWaitingOnStorey = new int[stories];
 		this.uiModule = uiModule;
@@ -155,6 +155,11 @@ public class MainStage extends Stage
 		shapeRenderer.end();
 		
 		super.draw();
+	}
+	
+	public static int getStoreyCount()
+	{
+		return stories;
 	}
 	
 	@Override

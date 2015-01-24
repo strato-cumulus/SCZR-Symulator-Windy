@@ -45,6 +45,9 @@ public class UIModule
 					InitializeGUIPacket packet = (InitializeGUIPacket)o;
 					System.out.println(packet.storeyHeight);
 					System.out.println(packet.storeyNumber);
+					try {
+						bq.put(packet);
+					} catch(InterruptedException e) {e.printStackTrace();}
 					client.removeListener(this);
 				}
 			}
@@ -56,9 +59,10 @@ public class UIModule
 			client.connect(50, "127.0.0.1", 1234);
 		} catch (IOException e) { e.printStackTrace(); }
 		
+		InitializeGUIPacket p = bq.poll();
 
 		this.skinAtlas = new SkinAtlas();
-		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
+		this.mainStage = new MainStage(skinAtlas.getSkin(), this, p.storeyNumber, p.storeyHeight);
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
 		client.addListener(mainStage.listener);
 		this.setStage(mainStage);
