@@ -7,7 +7,6 @@ import model.elevator.ElevatorCar;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.sczr.symulator_windy.packets.ElevatorCallPacket_;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
 
@@ -27,23 +26,19 @@ public class Model{
 		this.server = new Server();
 		this.server.start();
 		this.server.bind(tcpPort);
-		
 		this.server.addListener(new Listener() {
 			
 			@Override
 			public void received(Connection c, Object o) {
 				//modul pasazerow
-				if(o instanceof ElevatorCallPacket_) {
-					ElevatorCallPacket_ p = (ElevatorCallPacket_)o;
-				}
-				else if(o instanceof NewPassengerPacket){
+				if(o instanceof NewPassengerPacket){
 					NewPassengerPacket p = (NewPassengerPacket)o;
 					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination));
 				}				
 				//modul sterowania
-
-				//modul gui
 				
+				//modul gui
+				//else if(o instanceof ElevatorCa)
 
 			}
 		});
