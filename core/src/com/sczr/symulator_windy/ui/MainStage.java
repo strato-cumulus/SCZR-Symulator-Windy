@@ -31,7 +31,7 @@ public class MainStage extends Stage
 	Label storeyLabels[];
 	Table mainTable;
 	Label peopleInsideLabel;
-	PositionUpdateListener listener = new PositionUpdateListener(this.elevator);
+	PositionUpdateListener listener;
 
 	/*************************************************************************| 
 	|
@@ -67,8 +67,9 @@ public class MainStage extends Stage
 		storeyLabels = new Label[stories];	
 		peopleWaitingOnStorey = new int[stories];
 
-		this.elevator = new ElevatorCar(60, (int) (getHeight()/stories) - 30, ELEVATOR_X);
+		this.elevator = new ElevatorCar(storeyHeight, (int) (getHeight()/stories) - 30, ELEVATOR_X);
 		addActor(elevator);
+		this.listener = new PositionUpdateListener(elevator);
 		
 		for(int i=0; i<stories; i++){
 			Label label = new Label("", skin);
