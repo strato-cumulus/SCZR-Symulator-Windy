@@ -19,11 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.state.Direction;
-import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
-import com.sczr.symulator_windy.ui.elevator.ElevatorCar;
-import com.sczr.symulator_windy.ui.elevator.Floor;
-import com.sczr.symulator_windy.ui.passengers.Passenger;
-import com.sczr.symulator_windy.ui.passengers.PassengerState;
+import com.sczr.symulator_windy.ui.ElevatorCallButton;
 
 public class MainStage extends Stage
 {
@@ -31,7 +27,6 @@ public class MainStage extends Stage
 	public static final int ELEVATOR_X = 200;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
-	final Floor[] floors = new Floor[STOREY_NUM];
 	final UIModule uiModule;
 	
 	int peopleWaitingOnStorey[];
@@ -76,12 +71,7 @@ public class MainStage extends Stage
 		peopleWaitingOnStorey = new int[STOREY_NUM];
 		this.uiModule = uiModule;
 		
-		this.elevator = new ElevatorCar(
-				this.uiModule, 60,
-				(int) (getHeight()/STOREY_NUM) - 30,
-				ELEVATOR_X, (int)(getHeight()/STOREY_NUM),
-				STOREY_NUM
-		);
+		this.elevator = new ElevatorCar(this.uiModule, 60, (int) (getHeight()/STOREY_NUM) - 30, ELEVATOR_X);
 		addActor(elevator);
 		
 		for(int i=0; i<STOREY_NUM; i++){
@@ -108,8 +98,8 @@ public class MainStage extends Stage
 		
 		ElevatorCallButton groundFloorButton = new ElevatorCallButton("^", skin, Direction.UP, 0);
 		ElevatorCallButton topFloorButton = new ElevatorCallButton("v", skin, Direction.DOWN, STOREY_NUM-1);
-		topFloorButton.setPosition(ELEVATOR_X+elevator.getElevatorWidth(), getFloorLevel(STOREY_NUM-1)+60);
-		groundFloorButton.setPosition(ELEVATOR_X+elevator.getElevatorWidth(), getFloorLevel(0)+45);
+		topFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(STOREY_NUM-1)+60);
+		groundFloorButton.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(0)+45);
 		topFloorButton.addListener(new ElevatorButtonListener(4, Direction.DOWN));
 		groundFloorButton.addListener(new ElevatorButtonListener(0, Direction.UP));
 		
@@ -120,8 +110,8 @@ public class MainStage extends Stage
 		for(int i=1; i<STOREY_NUM - 1; i++){
 			ElevatorCallButton up = new ElevatorCallButton("^", skin, Direction.UP, i);
 			ElevatorCallButton down = new ElevatorCallButton("v", skin, Direction.DOWN, i);
-			up.setPosition(ELEVATOR_X+elevator.getElevatorWidth(), getFloorLevel(i)+60);
-			down.setPosition(ELEVATOR_X+elevator.getElevatorWidth(), getFloorLevel(i)+45);
+			up.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+60);
+			down.setPosition(ELEVATOR_X+elevator.ELEVATOR_WIDTH, getFloorLevel(i)+45);
 			callButtons.add(up);
 			callButtons.add(down);
 			up.addListener(new ElevatorButtonListener(i, Direction.UP));
@@ -144,17 +134,19 @@ public class MainStage extends Stage
 	}
 	
 	@Override
-	public void draw(){
-		
+	public void draw()
+	{	
 		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.WHITE);	
+		shapeRenderer.setColor(Color.WHITE);
+		
 		//pietra
-		for(int i=0; i<STOREY_NUM; i++){
+		for(int i=0; i<STOREY_NUM; i++) {
 			shapeRenderer.line(0, getFloorLevel(i), getWidth(), getFloorLevel(i));
 		}
+		
 		//szyb windy
 		shapeRenderer.line(ELEVATOR_X, 0, ELEVATOR_X, getHeight());
-		shapeRenderer.line(ELEVATOR_X+elevator.getElevatorWidth(), 0, ELEVATOR_X+elevator.getElevatorWidth(), getHeight());
+		shapeRenderer.line(ELEVATOR_X + elevator.ELEVATOR_WIDTH, 0, ELEVATOR_X + elevator.ELEVATOR_HEIGHT, getHeight());
 		shapeRenderer.end();
 		
 		//winda
@@ -186,11 +178,6 @@ public class MainStage extends Stage
 		return (int) (floor*getHeight()/STOREY_NUM);
 	}
 	
-	void dispatchElevator(int callFloor, int destinationFloor)
-	{
-		this.elevator.dispatch(callFloor, destinationFloor);
-	}
-	
 	class ElevatorButtonListener extends ChangeListener 
 	{
 		private final int story;
@@ -217,36 +204,6 @@ public class MainStage extends Stage
 			System.out.println("Sending call from floor " + this.story + " to floor " + randomValue);
 			uiModule.sendPacket(new ElevatorCallPacket(this.story, randomValue));
 		}
-	}
-	
-	public void handleFloor()
-	{
-		final int floor = elevator.getFloor();
-		if (this.elevator.getNumberOfPeopleInside() > 0)
-		{
-			for(Passenger passenger : elevator.getPassengers())
-			{
-				if(passenger.getDestination() == floor)
-				{
-					passenger.setState(PassengerState.ARRIVED);
-					floors[floor].addArrivedPassenger(passenger);
-					elevator.exit(passenger);
-				}
-			}
-			elevator.offButton(floor);
-			
-		}
-
-		if (this.elevator.getNumberOfPeopleInside() < 5)
-		{
-			while(this.elevator.getNumberOfPeopleInside() < 5)
-			{
-				Passenger passenger = floors[floor].getInPassenger();
-				passenger.setState(PassengerState.INSIDE);
-				elevator.chooseFloor(passenger.getDestination());
-				elevator.enter(passenger);
-			}
-		}
-	}
+	}	
 }
 

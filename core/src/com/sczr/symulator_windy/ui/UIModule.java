@@ -13,7 +13,7 @@ import com.sczr.symulator_windy.modules.Module;
 import com.sczr.symulator_windy.packets.DispatchElevatorPacket;
 import com.sczr.symulator_windy.packets.Packet;
 
-public class UIModule extends Module
+public class UIModule
 {
 	private final SkinAtlas       skinAtlas;
 	private final ConnectionStage connectionStage;
@@ -25,12 +25,10 @@ public class UIModule extends Module
 	
 	public UIModule(int tcpPort, int windowWidth, int windowHeight) throws IOException
 	{
-		super(tcpPort);
 		this.skinAtlas = new SkinAtlas();
 		this.connectionStage = new ConnectionStage(skinAtlas, this);
 		this.mainStage = new MainStage(skinAtlas.getSkin(), this);
 		this.setStage(mainStage);
-		this.server.addListener(new DispatchElevatorListener());
 		
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
@@ -64,21 +62,5 @@ public class UIModule extends Module
         int viewportHeight = (int)size.y;
         //Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
         currentStage.getViewport().update(viewportWidth, viewportHeight);
-	}
-	
-	void sendPacket(Packet packet)
-	{
-		this.client.sendTCP(packet);
-	}
-	
-	class DispatchElevatorListener extends Listener
-	{
-		@Override
-		public void received(Connection c, Object o)
-		{
-			if(o instanceof DispatchElevatorPacket) {
-				mainStage.dispatchElevator(((DispatchElevatorPacket)o).callFloor, ((DispatchElevatorPacket)o).destinationFloor);
-			}
-		}
 	}
 }
