@@ -3,6 +3,9 @@ package com.sczr.symulator_windy.ui;
 import java.util.ArrayList;
 import java.util.Random;
 
+import model.Model;
+import model.elevator.ElevatorCarModel;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -31,7 +34,6 @@ public class MainStage extends Stage
 	
 	static int stories;//parter to pietro zero; liczba 5 oznacza ze jest parter i 4 pietra
 	static int ELEVATOR_X = 200;
-	static int storeyHeight;
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
 	private final ElevatorCar elevator;
 	
@@ -74,16 +76,16 @@ public class MainStage extends Stage
 	public MainStage(Skin skin, int storeyCount, int storeyHeight, int elevatorWidth, Client client)
 	{	 
 		this.client = client;
-		stories = storeyCount;
+		stories = Model.NUMBER_OF_FLOORS;
 		storeyLabels = new Label[stories];	
 		peopleWaitingOnStorey = new int[stories];
-		MainStage.storeyHeight = storeyHeight;
 
 		storeyHeight = (int) this.getHeight() / storeyCount;
 		
-		this.elevator = new ElevatorCar(elevatorWidth, storeyHeight, ELEVATOR_X);
+		this.elevator = new ElevatorCar(ElevatorCarModel.ELEVATOR_WIDTH, Model.FLOOR_HEIGHT, ELEVATOR_X);
 		addActor(elevator);
 		this.listener = new PositionUpdateListener(elevator);
+		//client.addListener(listener);
 		
 		for(int i=0; i<stories; i++){
 			Label label = new Label("", skin);
@@ -205,7 +207,7 @@ public class MainStage extends Stage
 	
 	//podajesz pietro i zwraca ci na jakiej wysokosci w pixelach sie znajduje
 	private int getFloorLevel(int floor){
-		return (int) (floor*getHeight()/stories);
+		return floor*Model.FLOOR_HEIGHT;
 	}
 	
 	class ElevatorButtonListener extends ChangeListener 

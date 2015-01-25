@@ -36,6 +36,12 @@ public class StateMachine
 	
 	State nextState(DoorStill state, float delta)
 	{
+		if(elevatorCar.checkFloor() <= Model.NUMBER_OF_FLOORS && elevatorCar.checkFloor() >= 0) {
+			if(elevatorCar.previousElevatorState == null){
+				return new ElevatorStill();
+			}
+			return elevatorCar.previousElevatorState;
+		}
 		return state;
 	}
 
@@ -43,9 +49,13 @@ public class StateMachine
 	{
 		if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor()) {
 			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
-			//elevatorCar.setY((elevatorCar.checkFloor()) * elevatorCar.getStage().getHeight() / MainStage.STOREY_NUM);
+			elevatorCar.setY((elevatorCar.checkFloor()) * Model.FLOOR_HEIGHT);
+			while(elevatorCar.getNumberOfPeopleInside() < elevatorCar.MAX_PASSENGERS){
+				elevatorCar.enter(Model.floors[elevatorCar.getDestinationFloor()].getInPassenger());
+			}
 			return new ElevatorStill();
 		}
+		elevatorCar.previousElevatorState = state;
 		elevatorCar.setY(elevatorCar.getY() - elevatorCar.ELEVATOR_SPEED * delta);
 		return state;
 	}
@@ -55,14 +65,22 @@ public class StateMachine
 		if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()) {
 			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
 			elevatorCar.setY((elevatorCar.checkFloor()) * Model.FLOOR_HEIGHT);
+			while(elevatorCar.getNumberOfPeopleInside() < elevatorCar.MAX_PASSENGERS){
+				elevatorCar.enter(Model.floors[elevatorCar.getDestinationFloor()].getInPassenger());
+			}
 			return new ElevatorStill();
 		}
+		elevatorCar.previousElevatorState = state;
 		elevatorCar.setY(elevatorCar.getY() + elevatorCar.ELEVATOR_SPEED * delta);
 		return state;
 	}
 	
 	State nextState(ElevatorStill state, float delta)
 	{
+		if(elevatorCar.checkFloor() > elevatorCar.getDestinationFloor())
+			return new ElevatorGoingDown();
+		if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor())
+			return new ElevatorGoingUp();
 		return state;
 	}
 }

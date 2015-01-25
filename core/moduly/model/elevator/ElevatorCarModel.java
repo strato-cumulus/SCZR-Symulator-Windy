@@ -5,31 +5,31 @@ import java.util.HashSet;
 import java.util.Set;
 
 import model.Model;
-import model.Passenger;
 import model.elevator.state.DoorStill;
 import model.elevator.state.ElevatorGoingDown;
 import model.elevator.state.ElevatorGoingUp;
-import model.elevator.state.ElevatorStill;
 import model.elevator.state.State;
 import model.elevator.state.StateMachine;
+import passengersmodule.Passenger;
 
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 
 public class ElevatorCarModel{
 
-	public static final int ELEVATOR_HEIGHT =70;
-	public static final int ELEVATOR_WIDTH =30;
+	public static final int ELEVATOR_WIDTH = 30;
 	public final float DOOR_SPEED = 60;
-	public final float ELEVATOR_SPEED = 2;
-	
+	public final float ELEVATOR_SPEED = 0.02f;
+	public final float MAX_PASSENGERS = 5;
 
-	private int destinationFloor = 2;
-	private float currentVerticalPosition = 0;
+	private int destinationFloor = 7;
+	private float currentVerticalPosition;
 	private float currentDoorWidth = ELEVATOR_WIDTH;
+	
 	
 	
 	State doorState;
 	public State elevatorState;
+	public State previousElevatorState;
 	
 	final ArrayList<Passenger> passengersInCar;
 	private StateMachine stateMachine;
@@ -44,11 +44,9 @@ public class ElevatorCarModel{
 	}
 	
 	public void actElevator(float delta) throws ElevatorStateException{
-		System.out.println(getCurrentDoorWidth());
-		System.out.println(getCurrentVericalPosition());
-		if(!elevatorState.getClass().equals(ElevatorStill.class) && !doorState.getClass().equals(DoorStill.class)) {
+		/*if(!elevatorState.getClass().equals(ElevatorStill.class) && !doorState.getClass().equals(DoorStill.class)) {
 			throw new ElevatorStateException();
-		}
+		}*/
 	
 		this.doorState = this.doorState.accept(this.stateMachine, delta);
 		this.elevatorState = this.elevatorState.accept(this.stateMachine, delta);

@@ -12,7 +12,7 @@ public class Passenger {
 		this.floor = 0;
 	}
 	
-	Passenger(final int ID, final int destination, final int floor)
+	public Passenger(final int ID, final int destination, final int floor)
 	{
 		this.ID = ID;
 		this.destination = destination;

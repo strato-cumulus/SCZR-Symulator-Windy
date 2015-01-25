@@ -3,6 +3,8 @@ package model;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import passengersmodule.Passenger;
+
 public class Floor 
 {
 	final int storeyNumber;

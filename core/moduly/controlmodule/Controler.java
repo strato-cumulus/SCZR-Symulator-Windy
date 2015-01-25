@@ -1,7 +1,7 @@
 package controlmodule;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import model.elevator.state.ElevatorGoingDown;
@@ -67,41 +67,47 @@ public class Controler
 	{
 		int nextFloorToStop = -1;
 		State elevatorState = packet.getElevatorState();
-		Integer[] upButtons = packet.getUpButtons();
-		Integer[] downButtons = packet.getDownButtons();
+		ArrayList<Integer> upButtons = packet.getUpButtons();
+		ArrayList<Integer> downButtons = packet.getDownButtons();
 		List<Integer> passengersDestinations = packet.getDestinations();
 		int currentFloor = packet.getCurrentFloor();
 		
-		int prevdestination;
-		int destination;
-		List<Integer> stops = new LinkedList<Integer>();
+		if(downButtons.size()+passengersDestinations.size()==0)
+			return new ChangeDestinationFloorPacket(currentFloor);
 		
 		if(elevatorState instanceof ElevatorStill)
 		{
-			if(currentFloor != 0)
-			{
-				for(int i = 0; i<10; i++)
-				{
-					if(upButtons[i] == 1)
-					{
-						destination = i;
-					}
+	
+		}
+		else if(elevatorState instanceof ElevatorGoingDown){
+			int currentMaximum =-1;
+			for (Integer integer : downButtons) {
+				if(integer>currentMaximum && integer <= currentFloor){
+					currentMaximum = integer;
 				}
 			}
-			if(currentFloor == 0)
-			{
-				
+			for (Integer integer : passengersDestinations) {
+				if(integer>currentMaximum && integer <= currentFloor){
+					currentMaximum = integer;
+				}
 			}
-				
+			nextFloorToStop = currentMaximum;
 		}
-		if(elevatorState instanceof ElevatorGoingDown)
-		{
-			
+		else if(elevatorState instanceof ElevatorGoingUp){
+			int currentMinimum = Integer.MAX_VALUE;
+			for (Integer integer : upButtons) {
+				if(integer<currentMinimum && integer > currentFloor){
+					currentMinimum = integer;
+				}
+			}
+			for (Integer integer : passengersDestinations) {
+				if(integer<currentMinimum && integer > currentFloor){
+					currentMinimum = integer;
+				}
+			}
+			nextFloorToStop = currentMinimum;
 		}
-		if(elevatorState instanceof ElevatorGoingUp)
-		{
-			
-		}
+		
 		return new ChangeDestinationFloorPacket(nextFloorToStop);
 	}
 }

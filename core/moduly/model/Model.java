@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import model.elevator.ElevatorCarModel;
+import passengersmodule.Passenger;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -15,6 +16,7 @@ import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.ElevatorStateInfoPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.InitializeGUIPacket;
+import com.sczr.symulator_windy.packets.controllerpackets.ChangeDestinationFloorPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
@@ -23,16 +25,17 @@ import com.sczr.symulator_windy.serialization.SerializationList;
 
 
 
+
 public class Model{
 	public static final int NUMBER_OF_FLOORS = 10;
-	public static final int FLOOR_HEIGHT = 90;
+	public static final int FLOOR_HEIGHT = 60;
 	public static final int GUI_REFRESH_RATE = 100;
 	public static final int CONTROLLER_REFRESH_RATE = 25;
 	public static final int MODEL_REFRESH_RATE = 25;
 
 	private final Server server;
 	private final ElevatorCarModel elevatorCar = new ElevatorCarModel();
-	private Floor[] floors = new Floor[NUMBER_OF_FLOORS];
+	public static Floor[] floors = new Floor[NUMBER_OF_FLOORS];
 	
 	private int guiConnectionId = -1;
 	private int controllerConnectionId = -1;
@@ -60,7 +63,7 @@ public class Model{
 				}
 				else if(o instanceof NewPassengerPacket){
 					NewPassengerPacket p = (NewPassengerPacket)o;		
-					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination));
+					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination, p.floor));
 					server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
 					System.out.println("dodano nowego pasazera");
 				}				
@@ -68,6 +71,10 @@ public class Model{
 				else if(o instanceof ControllerRegisterPacket){
 					controllerConnectionId = c.getID();
 					System.out.println("rejestracja kontrolera");
+				}
+				else if(o instanceof ChangeDestinationFloorPacket){
+					ChangeDestinationFloorPacket p = (ChangeDestinationFloorPacket)o;
+					elevatorCar.setDestinationFloor(p.getDestination());
 				}
 				//modul gui
 				else if(o instanceof GUIRegisterPacket){
@@ -149,6 +156,10 @@ public class Model{
 				clicked.add(i);
 		}
 		return clicked;
+	}
+	
+	public Floor[] getFloors(){
+		return floors;
 	}
 
 }
