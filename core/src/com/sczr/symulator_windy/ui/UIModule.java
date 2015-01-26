@@ -45,8 +45,6 @@ public class UIModule
 			public void received(Connection c, Object o) {
 				if(o instanceof InitializeGUIPacket) {
 					InitializeGUIPacket packet = (InitializeGUIPacket)o;
-					System.out.println(packet.storeyHeight);
-					System.out.println(packet.storeyNumber);
 					try {
 						bq.put(packet);
 					} catch(InterruptedException e) {e.printStackTrace();}			

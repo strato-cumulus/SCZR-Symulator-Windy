@@ -30,7 +30,7 @@ public class Model{
 	public static final int NUMBER_OF_FLOORS = 10;
 	public static final int FLOOR_HEIGHT = 60;
 	public static final int GUI_REFRESH_RATE = 100;
-	public static final int CONTROLLER_REFRESH_RATE = 25;
+	public static final int CONTROLLER_REFRESH_INTERVAL = 15;
 	public static final int MODEL_REFRESH_RATE = 25;
 
 	private final Server server;
@@ -39,6 +39,7 @@ public class Model{
 	
 	private int guiConnectionId = -1;
 	private int controllerConnectionId = -1;
+	public static boolean isControllerConnected = false;
 	
 	private boolean[] upButtons = new boolean[NUMBER_OF_FLOORS-1];
 	private boolean[] downButtons = new boolean[NUMBER_OF_FLOORS-1];
@@ -70,6 +71,7 @@ public class Model{
 				//modul sterowania
 				else if(o instanceof ControllerRegisterPacket){
 					controllerConnectionId = c.getID();
+					isControllerConnected = true;
 					System.out.println("rejestracja kontrolera");
 				}
 				else if(o instanceof ChangeDestinationFloorPacket){
@@ -85,11 +87,24 @@ public class Model{
 				//else if(o instanceof ElevatorCa)
 
 			}
+			
+			@Override
+			public void disconnected (Connection connection) {
+				if(connection.getID() == controllerConnectionId){
+					isControllerConnected = false;
+					System.out.println("rozlaczono kontroler");
+				}
+				else if(connection.getID() == guiConnectionId){
+					System.out.println("rozlaczono gui");
+				}
+			}
 		});
 		
 		
 		
 		SerializationList.register(server.getKryo());
+		
+		
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 			
@@ -111,7 +126,7 @@ public class Model{
 								elevatorCar.getPassangerDestinations(), 
 								elevatorCar.elevatorState));
 			}
-		}, 0, CONTROLLER_REFRESH_RATE);
+		}, 0, CONTROLLER_REFRESH_INTERVAL);
 		
         timer.scheduleAtFixedRate(new TimerTask() {
 			
@@ -125,19 +140,6 @@ public class Model{
 			}
 		}, 0, MODEL_REFRESH_RATE);
         
-	}
-	
-	public static void main(String[] args){
-		System.out.println("...GÓRAL...");
-		
-		try{
-			new Model(1234);
-		}
-		catch(Exception e){
-			e.printStackTrace(); 
-			System.exit(1);
-		}
-		
 	}
 	
 	private ArrayList<Integer> getUpButtonsClicked(){
@@ -160,6 +162,21 @@ public class Model{
 	
 	public Floor[] getFloors(){
 		return floors;
+	}
+	
+	
+	
+	
+	public static void main(String[] args){	
+		try{
+			new Model(1234);
+		}
+		catch(Exception e){
+			e.printStackTrace(); 
+			System.exit(1);
+		}
+		System.out.println("...GÓRAL...");
+		
 	}
 
 }

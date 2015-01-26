@@ -37,22 +37,21 @@ public class StateMachine
 	State nextState(DoorStill state, float delta)
 	{
 		if(elevatorCar.checkFloor() <= Model.NUMBER_OF_FLOORS && elevatorCar.checkFloor() >= 0) {
-			if(elevatorCar.previousElevatorState == null){
-				return new ElevatorStill();
-			}
 			return elevatorCar.previousElevatorState;
 		}
 		return state;
 	}
 
-	State nextState(ElevatorGoingDown state, float delta)
-	{
-		if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor()) {
-			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
-			elevatorCar.setY((elevatorCar.checkFloor()) * Model.FLOOR_HEIGHT);
-			while(elevatorCar.getNumberOfPeopleInside() < elevatorCar.MAX_PASSENGERS){
-				elevatorCar.enter(Model.floors[elevatorCar.getDestinationFloor()].getInPassenger());
-			}
+	State nextState(ElevatorGoingDown state, float delta) throws InterruptedException{
+		int destination = elevatorCar.getDestinationFloor();
+		
+		if(elevatorCar.checkFloor() < destination) {
+			System.out.println("Arrived on floor " + destination);
+			elevatorCar.setY((elevatorCar.getDestinationFloor()) * Model.FLOOR_HEIGHT);
+			elevatorCar.allowPassengersToLeave(destination);
+			elevatorCar.allowPassengersToEnter(destination);
+			elevatorCar.elevatorState = new ElevatorStill();
+			Thread.sleep(300);
 			return new ElevatorStill();
 		}
 		elevatorCar.previousElevatorState = state;
@@ -60,14 +59,13 @@ public class StateMachine
 		return state;
 	}
 	
-	State nextState(ElevatorGoingUp state, float delta)
-	{
-		if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()) {
-			System.out.println("Arrived on floor " + elevatorCar.getDestinationFloor());
+	State nextState(ElevatorGoingUp state, float delta) throws InterruptedException{
+		int destination = elevatorCar.getDestinationFloor();
+		if(elevatorCar.checkFloor() >= destination) {
+			System.out.println("Arrived on floor " + destination);
 			elevatorCar.setY((elevatorCar.checkFloor()) * Model.FLOOR_HEIGHT);
-			while(elevatorCar.getNumberOfPeopleInside() < elevatorCar.MAX_PASSENGERS){
-				elevatorCar.enter(Model.floors[elevatorCar.getDestinationFloor()].getInPassenger());
-			}
+			elevatorCar.elevatorState = new ElevatorStill();
+			Thread.sleep(300);
 			return new ElevatorStill();
 		}
 		elevatorCar.previousElevatorState = state;
@@ -75,12 +73,39 @@ public class StateMachine
 		return state;
 	}
 	
-	State nextState(ElevatorStill state, float delta)
-	{
-		if(elevatorCar.checkFloor() > elevatorCar.getDestinationFloor())
-			return new ElevatorGoingDown();
-		if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor())
-			return new ElevatorGoingUp();
-		return state;
+	State nextState(ElevatorStill state, float delta){
+		if(Model.isControllerConnected == true){
+			if(elevatorCar.checkFloor() > elevatorCar.getDestinationFloor())
+				return new ElevatorGoingDown();
+			else if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor())
+				return new ElevatorGoingUp();
+			else return state;
+		}
+		//WERSJA GLUPIA
+		else{	
+			if(elevatorCar.checkFloor() == Model.NUMBER_OF_FLOORS - 1){
+				elevatorCar.setDestinationFloor(Model.NUMBER_OF_FLOORS - 2);
+				elevatorCar.elevatorState = new ElevatorGoingDown();
+				return new ElevatorGoingDown();
+			}
+			else if(elevatorCar.checkFloor() == 0){
+				elevatorCar.setDestinationFloor(1);
+				elevatorCar.elevatorState = new ElevatorGoingUp();
+				return new ElevatorGoingUp();
+			}
+			else{
+				if(elevatorCar.previousElevatorState instanceof ElevatorGoingUp){
+					elevatorCar.setDestinationFloor(elevatorCar.getDestinationFloor()+1);
+				}
+				else if(elevatorCar.previousElevatorState instanceof ElevatorGoingDown){
+					elevatorCar.setDestinationFloor(elevatorCar.getDestinationFloor()-1);
+				}
+				elevatorCar.elevatorState = elevatorCar.previousElevatorState;
+				return elevatorCar.elevatorState;
+			}
+			
+		}
 	}
+	
+	
 }

@@ -12,6 +12,12 @@ public class ElevatorGoingUp extends State
 	public
 	State accept(StateMachine sm, float delta)
 	{
-		return sm.nextState(this, delta);
+		try {
+			return sm.nextState(this, delta);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

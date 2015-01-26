@@ -21,8 +21,8 @@ public class ElevatorCarModel{
 	public final float ELEVATOR_SPEED = 0.02f;
 	public final float MAX_PASSENGERS = 5;
 
-	private int destinationFloor = 7;
-	private float currentVerticalPosition;
+	private int destinationFloor = 9;
+	private float currentVerticalPosition = 361;
 	private float currentDoorWidth = ELEVATOR_WIDTH;
 	
 	
@@ -48,8 +48,8 @@ public class ElevatorCarModel{
 			throw new ElevatorStateException();
 		}*/
 	
-		this.doorState = this.doorState.accept(this.stateMachine, delta);
-		this.elevatorState = this.elevatorState.accept(this.stateMachine, delta);
+		this.doorState.accept(this.stateMachine, delta);
+		this.elevatorState.accept(this.stateMachine, delta);
 	}
 
 	
@@ -79,6 +79,7 @@ public class ElevatorCarModel{
 	}
 	
 	public void enter(Passenger passenger){
+		new Exception().printStackTrace();
 		passengersInCar.add(passenger);
 	}
 
@@ -120,8 +121,33 @@ public class ElevatorCarModel{
 
 	public void setY(float f) {
 		currentVerticalPosition = f;
-		
 	}
-
+	
+	
+	/**
+	 * pakuje do windy pasazerow z podanej podlogi. robi to tak dlugo, az zapelni winde
+	 * @param floor - pietro na ktorym sie znajduje wozek
+	 */
+	public void allowPassengersToEnter(int floor){
+		while(getNumberOfPeopleInside() < MAX_PASSENGERS){
+			Passenger p = Model.floors[floor].getInPassenger();
+			if(p == null){
+				return;
+			}
+			passengersInCar.add(p);
+		}
+	}
+	
+	/**
+	 * pozwala wysiasc pasazerom
+	 * @param floor - pietro na ktorym sie znajduje wozek
+	 */
+	public void allowPassengersToLeave(int floor){
+		for (Passenger passenger : passengersInCar) {
+			if(passenger.getDestination() == floor){
+				passengersInCar.remove(passenger);
+			}
+		}
+	}
 }
 
