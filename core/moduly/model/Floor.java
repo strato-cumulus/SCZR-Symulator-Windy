@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -8,25 +9,36 @@ import passengersmodule.Passenger;
 public class Floor 
 {
 	final int storeyNumber;
-	final Queue<Passenger> waitingPassengers;
+	final Queue<Passenger> waitingPassengersDown;
+	final Queue<Passenger> waitingPassengersUp; 
 	
 	Floor(final int storeyNumber)
 	{
 		this.storeyNumber = storeyNumber;
-		this.waitingPassengers = new LinkedList<Passenger>();
+		this.waitingPassengersDown = new LinkedList<Passenger>();
+		this.waitingPassengersUp = new LinkedList<Passenger>();
 	}
 	
 	
-	public void addWaitingPassenger(Passenger passenger)
+	public void addWaitingPassengerUp(Passenger passenger)
 	{
-		this.waitingPassengers.add(passenger);
+		this.waitingPassengersUp.add(passenger);
 	}
 	
-	public Passenger getInPassenger(){
-		return waitingPassengers.poll();
+	public void addWaitingPassengerDown(Passenger passenger)
+	{
+		this.waitingPassengersDown.add(passenger);
+	}
+	
+	public Passenger getInPassengerUp(){
+		return waitingPassengersUp.poll();
+	}
+	
+	public Passenger getInPassengerDown(){
+		return waitingPassengersDown.poll();
 	}
 	
 	public int numberOfWaitingPassengers(){
-		return waitingPassengers.size();
+		return waitingPassengersUp.size() + waitingPassengersDown.size();
 	}
 }

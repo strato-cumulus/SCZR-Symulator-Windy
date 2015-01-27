@@ -44,8 +44,8 @@ public class Model implements SendPacketInterface
 	private int controllerConnectionId = -1;
 	public static boolean isControllerConnected = false;
 	
-	private boolean[] upButtons = new boolean[NUMBER_OF_FLOORS-1];
-	private boolean[] downButtons = new boolean[NUMBER_OF_FLOORS-1];
+	//private boolean[] upButtons = new boolean[NUMBER_OF_FLOORS-1];
+	//private boolean[] downButtons = new boolean[NUMBER_OF_FLOORS-1];
 	
 	
 	public Model(int tcpPort) throws IOException{
@@ -66,8 +66,12 @@ public class Model implements SendPacketInterface
 					ElevatorCallPacket p = (ElevatorCallPacket)o;
 				}
 				else if(o instanceof NewPassengerPacket){
-					NewPassengerPacket p = (NewPassengerPacket)o;		
-					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination, p.floor));
+					NewPassengerPacket p = (NewPassengerPacket)o;
+					if(p.destination > p.floor)
+						floors[p.floor].addWaitingPassengerUp(new Passenger(p.ID, p.destination, p.floor));
+					if(p.destination < p.floor)
+						floors[p.floor].addWaitingPassengerDown(new Passenger(p.ID, p.destination, p.floor));
+							
 					server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
 					System.out.println("dodano nowego pasazera");
 				}				
@@ -146,23 +150,24 @@ public class Model implements SendPacketInterface
 				}
 			}
 		}, 0, MODEL_REFRESH_RATE);
-        
 	}
 	
 	private ArrayList<Integer> getUpButtonsClicked(){
 		ArrayList<Integer> clicked = new ArrayList<>();
-		for(int i=0; i<upButtons.length; i++){
-			if(upButtons[i]==true)
-				clicked.add(i);
+		for (Floor floor : floors) {
+			for (Passenger passenger : floor.waitingPassengersUp) {
+				clicked.add(passenger.getFloor());
+			}
 		}
 		return clicked;
 	}
 	
 	private ArrayList<Integer> getDownButtonsClicked(){
 		ArrayList<Integer> clicked = new ArrayList<>();
-		for(int i=0; i<downButtons.length; i++){
-			if(downButtons[i]==true)
-				clicked.add(i);
+		for (Floor floor : floors) {
+			for (Passenger passenger : floor.waitingPassengersDown) {
+				clicked.add(passenger.getFloor());
+			}
 		}
 		return clicked;
 	}
