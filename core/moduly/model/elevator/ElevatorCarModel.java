@@ -132,7 +132,15 @@ public class ElevatorCarModel{
 	 */
 	public void allowPassengersToEnter(int floor){
 		while(getNumberOfPeopleInside() < MAX_PASSENGERS){
-			Passenger p = Model.floors[floor].getInPassenger();
+			Passenger p = null;
+			if(previousElevatorState instanceof ElevatorGoingUp)
+			{
+				p = Model.floors[floor].getInPassengerUp();
+			}
+			if(previousElevatorState instanceof ElevatorGoingDown)
+			{
+				p = Model.floors[floor].getInPassengerDown();
+			}
 			if(p == null){
 				return;
 			}

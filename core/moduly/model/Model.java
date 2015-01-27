@@ -63,8 +63,12 @@ public class Model{
 					ElevatorCallPacket p = (ElevatorCallPacket)o;
 				}
 				else if(o instanceof NewPassengerPacket){
-					NewPassengerPacket p = (NewPassengerPacket)o;		
-					floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination, p.floor));
+					NewPassengerPacket p = (NewPassengerPacket)o;
+					if(p.destination > p.floor)
+						floors[p.floor].addWaitingPassengerUp(new Passenger(p.ID, p.destination, p.floor));
+					if(p.destination < p.floor)
+						floors[p.floor].addWaitingPassengerDown(new Passenger(p.ID, p.destination, p.floor));
+							
 					server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
 					System.out.println("dodano nowego pasazera");
 				}				
@@ -143,7 +147,6 @@ public class Model{
 				}
 			}
 		}, 0, MODEL_REFRESH_RATE);
-        
 	}
 	
 	private ArrayList<Integer> getUpButtonsClicked(){

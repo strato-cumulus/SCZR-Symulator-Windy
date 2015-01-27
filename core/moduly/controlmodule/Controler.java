@@ -18,7 +18,6 @@ import com.sczr.symulator_windy.serialization.SerializationList;
 
 public class Controler 
 {
-	
 	private final Client client;
 	
 	public Controler(int tcpPort, String IPAdress)
@@ -53,12 +52,11 @@ public class Controler
 			System.err.println("Nie uda³o sie po³aczyc");
 			System.exit(1);
 		}
-		
-
 	}
 	
 	
-	public void runControler(){
+	public void runControler()
+	{
 
 	}
 	
@@ -71,6 +69,7 @@ public class Controler
 		ArrayList<Integer> downButtons = packet.getDownButtons();
 		List<Integer> passengersDestinations = packet.getDestinations();
 		int currentFloor = packet.getCurrentFloor();
+		List<Integer> allCalls = new ArrayList<Integer>();
 		
 		if(downButtons.size()+upButtons.size()+passengersDestinations.size()==0)
 			return new ChangeDestinationFloorPacket(currentFloor);
@@ -96,17 +95,22 @@ public class Controler
 				elevatorState = previousElevatorState;
 				return elevatorState;
 			}
-		
 		}*/
+		
+		
 		int maxOfStoreysBelowFloor =-1;
 		int minOfStoreysAboveCar = Integer.MAX_VALUE;
+		
+		allCalls.addAll(passengersDestinations);
+		allCalls.addAll(upButtons);
+		allCalls.addAll(downButtons);
 		
 		for (Integer integer : downButtons) {
 			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
 				maxOfStoreysBelowFloor = integer;
 			}
 		}
-		for (Integer integer : passengersDestinations) {
+		for (Integer integer : allCalls) {
 			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
 				maxOfStoreysBelowFloor = integer;
 			}
@@ -117,7 +121,7 @@ public class Controler
 				minOfStoreysAboveCar = integer;
 			}
 		}
-		for (Integer integer : passengersDestinations) {
+		for (Integer integer : allCalls) {
 			if(integer<minOfStoreysAboveCar && integer > currentFloor){
 				minOfStoreysAboveCar = integer;
 			}
