@@ -72,7 +72,7 @@ public class Controler
 		List<Integer> allCalls = new ArrayList<Integer>();
 		
 		if(downButtons.size()+upButtons.size()+passengersDestinations.size()==0)
-			return new ChangeDestinationFloorPacket(currentFloor);
+			return new ChangeDestinationFloorPacket(2);
 		
 		
 		/*
@@ -98,7 +98,7 @@ public class Controler
 		}*/
 		
 		
-		int maxOfStoreysBelowFloor =-1;
+		int maxOfStoreysBelowFloor =-10;
 		int minOfStoreysAboveCar = Integer.MAX_VALUE;
 		
 		allCalls.addAll(passengersDestinations);
@@ -141,7 +141,7 @@ public class Controler
 				e.printStackTrace();
 			}
 		}
-		if(nextFloorToStop == -1 || nextFloorToStop == Integer.MAX_VALUE){
+		if(nextFloorToStop == -10 || nextFloorToStop == Integer.MAX_VALUE){
 			try {
 				throw new Exception();
 			} catch (Exception e) {
