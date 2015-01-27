@@ -19,6 +19,7 @@ import com.sczr.symulator_windy.packets.controllerpackets.ChangeDestinationFloor
 import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
+import com.sczr.symulator_windy.packets.passengerpackets.PassengerEnterPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
 
 
@@ -27,31 +28,27 @@ public class SerializationList
 {
 	public static void register(Kryo kryo)
 	{
-		kryo.register(int.class);
-		kryo.register(Direction.class);
-		kryo.register(Packet.class);
-
-		kryo.register(ElevatorCallPacket.class);
-
-		kryo.register(ModelStateInfoPacket.class);
-
-		kryo.register(ElevatorCallPacket.class);
-
 		kryo.register(ChangeDestinationFloorPacket.class);
-		kryo.register(ElevatorStatePacket.class);
-		kryo.register(GUIRegisterPacket.class);
-		kryo.register(InitializeGUIPacket.class);
-		kryo.register(NewPassengerPacket.class);
-
 		kryo.register(ControllerRegisterPacket.class);
-		kryo.register(ArrayList.class);
-		kryo.register(ElevatorGoingUp.class);
+		kryo.register(PassengerEnterPacket.class);
+		kryo.register(ModelStateInfoPacket.class);
+		kryo.register(InitializeGUIPacket.class);
+		kryo.register(ElevatorStatePacket.class);
+		kryo.register(NewPassengerPacket.class);
+		kryo.register(ElevatorCallPacket.class);
+		kryo.register(ElevatorCallPacket.class);
 		kryo.register(ElevatorGoingDown.class);
+		kryo.register(GUIRegisterPacket.class);
+		kryo.register(ElevatorGoingUp.class);
 		kryo.register(ElevatorStill.class);
 		kryo.register(DoorClosing.class);
 		kryo.register(DoorOpening.class);
+		kryo.register(Direction.class);
+		kryo.register(ArrayList.class);
 		kryo.register(DoorStill.class);
 		kryo.register(Integer.class);
+		kryo.register(Packet.class);
 		kryo.register(int[].class);
+		kryo.register(int.class);
 	}
 }

@@ -23,8 +23,10 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
+import com.sczr.symulator_windy.packets.passengerpackets.PassengerEnterPacket;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton;
 import com.sczr.symulator_windy.ui.elevator.ElevatorCallButton.Direction;
+import com.sczr.symulator_windy.ui.util.ListLabel;
 
 public class MainStage extends Stage
 {
@@ -40,12 +42,13 @@ public class MainStage extends Stage
 	int peopleWaitingOnStorey[];
 	
 	Label storeyLabels[];
+	final ListLabel passengerLists[];
 	Table mainTable;
 	Label peopleInsideLabel;
 	ModelUpdatesListener listener;
 
 	/*************************************************************************| 
-	|
+	|                    _        _____                                       |
 	|		            (_)      / ____|                                      |
 	|	 _ __ ___   __ _ _ _ __ | (___   __ _  __ _  ___                      |	
 	|	| '_ ` _ \ / _` | | '_ \ \___ \ / _` |/ _` |/ _ \                     |	
@@ -78,6 +81,7 @@ public class MainStage extends Stage
 		this.client = client;
 		stories = Model.NUMBER_OF_FLOORS;
 		storeyLabels = new Label[stories];	
+		passengerLists = new ListLabel[stories];
 		peopleWaitingOnStorey = new int[stories];
 
 		storeyHeight = (int) this.getHeight() / storeyCount;
@@ -87,19 +91,23 @@ public class MainStage extends Stage
 		this.listener = new ModelUpdatesListener(elevator,this);
 		//client.addListener(listener);
 		
-		for(int i=0; i<stories; i++){
+		for(int i=0; i<stories; i++) {
 			Label label = new Label("", skin);
 			label.setY((getFloorLevel(i) ) + 5);
 			addActor(label);
 			storeyLabels[i] = label;
+			
+			passengerLists[i] = new ListLabel(skin);
+			addActor(passengerLists[i].label);
+			passengerLists[i].label.setY(getFloorLevel(i) + 20);
+			passengerLists[i].label.setX(300);
 			
 			TextButton addPersonButton = new TextButton("dodaj", skin);
 			addPersonButton.setY(getFloorLevel(i));
 			addPersonButton.setX(150);
 			addPersonButton.setName(i+"");
 			addActor(addPersonButton);
-			addPersonButton.addListener(new ClickListener(){
-				
+			addPersonButton.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y){
 					Random random = new Random();
@@ -113,11 +121,16 @@ public class MainStage extends Stage
 			@Override
 			public void received(Connection c, Object o) {			
 				if (o instanceof NewPassengerPacket) {
-					System.out.println("gui pas");
-					if(((NewPassengerPacket)o).floor > stories) {
+					NewPassengerPacket packet = (NewPassengerPacket)o;
+					if(packet.floor > stories) {
 						return;
 					}
-					peopleWaitingOnStorey[((NewPassengerPacket)o).floor] += 1;
+					peopleWaitingOnStorey[packet.floor] += 1;
+					passengerLists[packet.floor].addPassenger(packet.ID, packet.floor, packet.destination);
+				}
+				else if(o instanceof PassengerEnterPacket) {
+					PassengerEnterPacket p = (PassengerEnterPacket) o;
+					passengerLists[p.floor].removePassenger(p.id, p.floor, p.destination);
 				}
 			}
 		});
@@ -147,8 +160,7 @@ public class MainStage extends Stage
 		for (ElevatorCallButton elevatorCallButton : callButtons) {
 			addActor(elevatorCallButton);	
 		}
-		
-		
+			
 		Table table = new Table();
 		table.setFillParent(true);
 		addActor(table); 
@@ -156,8 +168,7 @@ public class MainStage extends Stage
 		peopleInsideLabel = new Label("", skin);
 		leftCornerTable.add(peopleInsideLabel);
 		table.add(leftCornerTable);
-		table.left().top();
-		
+		table.left().top();		
 	}
 	
 	@Override

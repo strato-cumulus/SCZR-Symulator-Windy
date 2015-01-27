@@ -3,6 +3,7 @@ package com.sczr.symulator_windy.ui;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.sczr.symulator_windy.packets.GUIpackets.ModelStateInfoPacket;
+import com.sczr.symulator_windy.packets.passengerpackets.NewPassengerPacket;
 
 class ModelUpdatesListener extends Listener
 {

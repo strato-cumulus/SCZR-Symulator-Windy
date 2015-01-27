@@ -14,6 +14,7 @@ import model.elevator.state.StateMachine;
 import passengersmodule.Passenger;
 
 import com.sczr.symulator_windy.exception.ElevatorStateException;
+import com.sczr.symulator_windy.packets.passengerpackets.PassengerEnterPacket;
 
 public class ElevatorCarModel{
 
@@ -25,7 +26,7 @@ public class ElevatorCarModel{
 	private int destinationFloor = 9;
 	private float currentVerticalPosition = 361;
 	private float currentDoorWidth = ELEVATOR_WIDTH;
-	
+	private SendPacketInterface sender;
 	
 	
 	State doorState;
@@ -35,13 +36,13 @@ public class ElevatorCarModel{
 	final CopyOnWriteArrayList<Passenger> passengersInCar;
 	private StateMachine stateMachine;
 	
-	public ElevatorCarModel() {
+	public ElevatorCarModel(SendPacketInterface sender) {
 		super();	
 		this.stateMachine = new StateMachine(this);
 		this.doorState = new DoorStill();
 		this.elevatorState = new ElevatorGoingUp();
 		this.passengersInCar = new CopyOnWriteArrayList<>();
-
+		this.sender = sender;
 	}
 	
 	public void actElevator(float delta) throws ElevatorStateException{
@@ -137,6 +138,7 @@ public class ElevatorCarModel{
 				return;
 			}
 			passengersInCar.add(p);
+			sender.sendPacket(new PassengerEnterPacket(p.getID(), p.getFloor(), p.getDestination()));
 		}
 	}
 	

@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import model.elevator.ElevatorCarModel;
+import model.elevator.SendPacketInterface;
 import passengersmodule.Passenger;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -13,6 +14,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
+import com.sczr.symulator_windy.packets.Packet;
 import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.InitializeGUIPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.ModelStateInfoPacket;
@@ -26,7 +28,8 @@ import com.sczr.symulator_windy.serialization.SerializationList;
 
 
 
-public class Model{
+public class Model implements SendPacketInterface 
+{
 	public static final int NUMBER_OF_FLOORS = 10;
 	public static final int FLOOR_HEIGHT = 60;
 	public static final int GUI_REFRESH_RATE = 100;
@@ -34,7 +37,7 @@ public class Model{
 	public static final int MODEL_REFRESH_RATE = 25;
 
 	private final Server server;
-	private final ElevatorCarModel elevatorCar = new ElevatorCarModel();
+	private final ElevatorCarModel elevatorCar;
 	public static Floor[] floors = new Floor[NUMBER_OF_FLOORS];
 	
 	private int guiConnectionId = -1;
@@ -49,7 +52,7 @@ public class Model{
 		for (int i=0; i<NUMBER_OF_FLOORS; i++) {
 			floors[i] = new Floor(i);
 		}
-		
+		this.elevatorCar = new ElevatorCarModel((SendPacketInterface)this);
 		this.server = new Server();
 		this.server.start();
 		this.server.bind(tcpPort);
@@ -181,6 +184,11 @@ public class Model{
 		}
 		System.out.println("...GÓRAL...");
 		
+	}
+
+	@Override
+	public void sendPacket(Packet packet) {
+		this.server.sendToAllTCP(packet);
 	}
 
 }
