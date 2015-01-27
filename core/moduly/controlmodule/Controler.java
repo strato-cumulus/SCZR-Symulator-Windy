@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Floor;
 import model.elevator.state.ElevatorGoingDown;
 import model.elevator.state.ElevatorGoingUp;
 import model.elevator.state.State;
@@ -69,12 +70,13 @@ public class Controler
 		ArrayList<Integer> downButtons = packet.getDownButtons();
 		List<Integer> passengersDestinations = packet.getDestinations();
 		int currentFloor = packet.getCurrentFloor();
-		List<Integer> allCalls = new ArrayList<Integer>();
+		ArrayList<Integer> allCalls = new ArrayList<Integer>();
 		
-		if(downButtons.size()+upButtons.size()+passengersDestinations.size()==0)
-			return new ChangeDestinationFloorPacket(2);
+		if(upButtons.size()+passengersDestinations.size()==0)
+			return new ChangeDestinationFloorPacket(0);
 		
-		
+
+
 		/*
 		if(currentElevatorState instanceof ElevatorStill){
 			if(currentFloor == Model.NUMBER_OF_FLOORS - 1){
@@ -98,40 +100,75 @@ public class Controler
 		}*/
 		
 		
-		int maxOfStoreysBelowFloor =-10;
-		int minOfStoreysAboveCar = Integer.MAX_VALUE;
+		//int maxOfStoreysBelowFloor =-10;
+		//int minOfStoreysAboveCar = Integer.MAX_VALUE;
 		
-		allCalls.addAll(passengersDestinations);
-		allCalls.addAll(upButtons);
-		allCalls.addAll(downButtons);
+		//allCalls.addAll(passengersDestinations
+		//allCalls.addAll(upButtons);
+		//allCalls.addAll(downButtons);
 		
-		for (Integer integer : downButtons) {
-			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
-				maxOfStoreysBelowFloor = integer;
-			}
+		for (Integer integer : passengersDestinations) {
+			allCalls.add(integer);
 		}
-		for (Integer integer : allCalls) {
-			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
-				maxOfStoreysBelowFloor = integer;
-			}
-		}
-			
+		
 		for (Integer integer : upButtons) {
-			if(integer<minOfStoreysAboveCar && integer > currentFloor){
-				minOfStoreysAboveCar = integer;
+			allCalls.add(integer);
+		}
+		
+
+		int maxLess = -1;
+		for(int floor: allCalls) {
+			if(floor <= packet.getCurrentFloor() && floor >= maxLess) {
+				maxLess = floor;
 			}
 		}
+		
+		int minBigger = 10;
+		for(int floor: allCalls) {
+			if(floor >= packet.getCurrentFloor() && floor <= minBigger) {
+				minBigger = floor;
+			}
+		}
+		
+		/*for (Integer integer : downButtons) {
+			allCalls.add(integer);
+		}*/
+		
+		if(allCalls.size() == 0)
+			System.out.println("dupa");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//System.out.println(currentFloor);
+/*
+		for (Integer integer : allCalls) {
+			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
+				maxOfStoreysBelowFloor = integer;
+			}
+		}
+			
+
 		for (Integer integer : allCalls) {
 			if(integer<minOfStoreysAboveCar && integer > currentFloor){
 				minOfStoreysAboveCar = integer;
 			}
 		}
-			
+			*/
 		if(prevElevatorState instanceof ElevatorGoingUp){
-			nextFloorToStop = minOfStoreysAboveCar;
+			nextFloorToStop = minBigger/*minOfStoreysAboveCar*/;
 		}
 		else if(prevElevatorState instanceof ElevatorGoingDown){
-			nextFloorToStop = maxOfStoreysBelowFloor;
+			nextFloorToStop = maxLess/*maxOfStoreysBelowFloor*/;
 		}
 		else{
 			try {
@@ -141,15 +178,29 @@ public class Controler
 				e.printStackTrace();
 			}
 		}
-		if(nextFloorToStop == -10 || nextFloorToStop == Integer.MAX_VALUE){
+		if(nextFloorToStop == -1 || nextFloorToStop == Integer.MAX_VALUE){
 			try {
-				throw new Exception();
+				//throw new Exception();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		System.out.println("dest:" + nextFloorToStop);
+		/*for (Integer integer : allCalls) {
+			System.out.println(integer);
+		}*/
+		//System.out.println("dest:" + nextFloorToStop);
+	//	System.out.println("AllCalls: " +allCalls.size());
+	//	System.out.println("Dest: " + nextFloorToStop);
+		
+		if(nextFloorToStop <= -1) 
+		{
+			nextFloorToStop = minBigger;
+		}
+		else if(nextFloorToStop >= 10)
+		{
+			nextFloorToStop = maxLess;
+		}
 		return new ChangeDestinationFloorPacket(nextFloorToStop);
 	}
 }

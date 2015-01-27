@@ -77,6 +77,14 @@ public class StateMachine
 	
 	State nextState(ElevatorStill state, float delta){
 		if(Model.isControllerConnected == true){
+			
+			
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()){
 				elevatorCar.elevatorState = new ElevatorGoingDown();
 				return new ElevatorGoingDown();

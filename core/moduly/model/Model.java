@@ -67,12 +67,9 @@ public class Model implements SendPacketInterface
 				}
 				else if(o instanceof NewPassengerPacket){
 					NewPassengerPacket p = (NewPassengerPacket)o;
-					if(p.destination > p.floor)
-						floors[p.floor].addWaitingPassengerUp(new Passenger(p.ID, p.destination, p.floor));
-					if(p.destination < p.floor)
-						floors[p.floor].addWaitingPassengerDown(new Passenger(p.ID, p.destination, p.floor));
+						floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination, p.floor));
 							
-					server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
+					//server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
 					System.out.println("dodano nowego pasazera");
 				}				
 				//modul sterowania
@@ -84,6 +81,7 @@ public class Model implements SendPacketInterface
 				else if(o instanceof ChangeDestinationFloorPacket){
 					ChangeDestinationFloorPacket p = (ChangeDestinationFloorPacket)o;
 					elevatorCar.setDestinationFloor(p.getDestination());
+					System.out.println("p.getdest: " + p.getDestination());
 				}
 				//modul gui
 				else if(o instanceof GUIRegisterPacket){
@@ -131,7 +129,7 @@ public class Model implements SendPacketInterface
 			public void run() {
 				server.sendToTCP(controllerConnectionId, 
 						new ElevatorStatePacket(getUpButtonsClicked(), 
-								getDownButtonsClicked(), 
+								/*getDownButtonsClicked(), */
 								elevatorCar.checkFloor(), 
 								elevatorCar.getPassangerDestinations(), 
 								elevatorCar.elevatorState,
@@ -155,13 +153,13 @@ public class Model implements SendPacketInterface
 	private ArrayList<Integer> getUpButtonsClicked(){
 		ArrayList<Integer> clicked = new ArrayList<>();
 		for (Floor floor : floors) {
-			for (Passenger passenger : floor.waitingPassengersUp) {
+			for (Passenger passenger : floor.waitingPassengers) {
 				clicked.add(passenger.getFloor());
 			}
 		}
 		return clicked;
 	}
-	
+/*	
 	private ArrayList<Integer> getDownButtonsClicked(){
 		ArrayList<Integer> clicked = new ArrayList<>();
 		for (Floor floor : floors) {
@@ -170,7 +168,7 @@ public class Model implements SendPacketInterface
 			}
 		}
 		return clicked;
-	}
+	}*/
 	
 	public Floor[] getFloors(){
 		return floors;

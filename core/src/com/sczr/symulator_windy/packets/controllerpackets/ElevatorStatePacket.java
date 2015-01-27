@@ -19,11 +19,11 @@ public class ElevatorStatePacket extends Packet
 	
 	public ElevatorStatePacket(){}
 	
-	public ElevatorStatePacket(ArrayList<Integer>upButtonsClicked, ArrayList<Integer >downButtonsClicked, final int currentFloor,
+	public ElevatorStatePacket(ArrayList<Integer>upButtonsClicked,/* ArrayList<Integer >downButtonsClicked,*/ final int currentFloor,
 								List<Integer> passengersDestinations, State currentElevatorState, State prevElevatorState)
 	{
 		this.upButtons = upButtonsClicked;
-		this.downButtons = downButtonsClicked;
+		/*this.downButtons = downButtonsClicked;*/
 		this.passangersDestinations = passengersDestinations;
 		this.setPrevElevatorState(prevElevatorState);
 		this.setCurrentElevatorState(currentElevatorState);

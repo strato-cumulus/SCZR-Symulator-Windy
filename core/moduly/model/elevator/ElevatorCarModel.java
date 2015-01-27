@@ -133,12 +133,13 @@ public class ElevatorCarModel{
 	 */
 	public void allowPassengersToEnter(int floor){
 		while(getNumberOfPeopleInside() < MAX_PASSENGERS){
-			Passenger p = null;
-			if(this.currentVerticalPosition == Model.FLOOR_HEIGHT*Model.NUMBER_OF_FLOORS-1)
+			//Passenger p = null;
+			/*if(this.currentVerticalPosition == Model.FLOOR_HEIGHT*Model.NUMBER_OF_FLOORS-1)
 			{
 				
-			}
-			if(previousElevatorState instanceof ElevatorGoingUp)
+			}*/
+			Passenger p = Model.floors[floor].getInPassenger();
+		/*	if(previousElevatorState instanceof ElevatorGoingUp)
 			{
 				if(destinationFloor < floor)
 					p = Model.floors[floor].getInPassengerDown();
@@ -150,8 +151,8 @@ public class ElevatorCarModel{
 				if(destinationFloor > floor)
 					p = Model.floors[floor].getInPassengerUp();
 				else
-					p = Model.floors[floor].getInPassengerDown();
-			}
+					p = Model.floors[floor].getInPassengerDown();*/
+			
 			if(p == null){
 				return;
 			}

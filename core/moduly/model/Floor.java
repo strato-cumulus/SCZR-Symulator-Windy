@@ -9,36 +9,29 @@ import passengersmodule.Passenger;
 public class Floor 
 {
 	final int storeyNumber;
-	final Queue<Passenger> waitingPassengersDown;
-	final Queue<Passenger> waitingPassengersUp; 
+	final Queue<Passenger> waitingPassengers;
 	
 	Floor(final int storeyNumber)
 	{
 		this.storeyNumber = storeyNumber;
-		this.waitingPassengersDown = new LinkedList<Passenger>();
-		this.waitingPassengersUp = new LinkedList<Passenger>();
+		this.waitingPassengers = new LinkedList<Passenger>();
+
 	}
 	
 	
-	public void addWaitingPassengerUp(Passenger passenger)
+	public void addWaitingPassenger(Passenger passenger)
 	{
-		this.waitingPassengersUp.add(passenger);
+		this.waitingPassengers.add(passenger);
 	}
 	
-	public void addWaitingPassengerDown(Passenger passenger)
-	{
-		this.waitingPassengersDown.add(passenger);
+
+	public Passenger getInPassenger(){
+		return waitingPassengers.poll();
 	}
 	
-	public Passenger getInPassengerUp(){
-		return waitingPassengersUp.poll();
-	}
-	
-	public Passenger getInPassengerDown(){
-		return waitingPassengersDown.poll();
-	}
+
 	
 	public int numberOfWaitingPassengers(){
-		return waitingPassengersUp.size() + waitingPassengersDown.size();
+		return waitingPassengers.size(); 
 	}
 }
