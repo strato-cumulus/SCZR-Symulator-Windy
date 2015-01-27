@@ -133,17 +133,28 @@ public class ElevatorCarModel{
 	public void allowPassengersToEnter(int floor){
 		while(getNumberOfPeopleInside() < MAX_PASSENGERS){
 			Passenger p = null;
+			if(this.currentVerticalPosition == Model.FLOOR_HEIGHT*Model.NUMBER_OF_FLOORS-1)
+			{
+				
+			}
 			if(previousElevatorState instanceof ElevatorGoingUp)
 			{
-				p = Model.floors[floor].getInPassengerUp();
+				if(destinationFloor < floor)
+					p = Model.floors[floor].getInPassengerDown();
+				else
+					p = Model.floors[floor].getInPassengerUp();
 			}
 			if(previousElevatorState instanceof ElevatorGoingDown)
 			{
-				p = Model.floors[floor].getInPassengerDown();
+				if(destinationFloor > floor)
+					p = Model.floors[floor].getInPassengerUp();
+				else
+					p = Model.floors[floor].getInPassengerDown();
 			}
 			if(p == null){
 				return;
 			}
+			System.out.println("Do windy wchodzi" + p.getID());
 			passengersInCar.add(p);
 		}
 	}
@@ -155,6 +166,7 @@ public class ElevatorCarModel{
 	public void allowPassengersToLeave(int floor){
 		for (Passenger passenger : passengersInCar) {
 			if(passenger.getDestination() == floor){
+				System.out.println("Z windy wychodzi: " + passenger.getID());
 				passengersInCar.remove(passenger);
 			}
 		}

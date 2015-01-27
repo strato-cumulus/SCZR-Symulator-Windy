@@ -41,8 +41,8 @@ public class Model{
 	private int controllerConnectionId = -1;
 	public static boolean isControllerConnected = false;
 	
-	private boolean[] upButtons = new boolean[NUMBER_OF_FLOORS-1];
-	private boolean[] downButtons = new boolean[NUMBER_OF_FLOORS-1];
+	//private boolean[] upButtons = new boolean[NUMBER_OF_FLOORS-1];
+	//private boolean[] downButtons = new boolean[NUMBER_OF_FLOORS-1];
 	
 	
 	public Model(int tcpPort) throws IOException{
@@ -151,18 +151,20 @@ public class Model{
 	
 	private ArrayList<Integer> getUpButtonsClicked(){
 		ArrayList<Integer> clicked = new ArrayList<>();
-		for(int i=0; i<upButtons.length; i++){
-			if(upButtons[i]==true)
-				clicked.add(i);
+		for (Floor floor : floors) {
+			for (Passenger passenger : floor.waitingPassengersUp) {
+				clicked.add(passenger.getFloor());
+			}
 		}
 		return clicked;
 	}
 	
 	private ArrayList<Integer> getDownButtonsClicked(){
 		ArrayList<Integer> clicked = new ArrayList<>();
-		for(int i=0; i<downButtons.length; i++){
-			if(downButtons[i]==true)
-				clicked.add(i);
+		for (Floor floor : floors) {
+			for (Passenger passenger : floor.waitingPassengersDown) {
+				clicked.add(passenger.getFloor());
+			}
 		}
 		return clicked;
 	}
