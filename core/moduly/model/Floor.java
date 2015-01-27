@@ -25,4 +25,8 @@ public class Floor
 	public Passenger getInPassenger(){
 		return waitingPassengers.poll();
 	}
+	
+	public int numberOfWaitingPassengers(){
+		return waitingPassengers.size();
+	}
 }

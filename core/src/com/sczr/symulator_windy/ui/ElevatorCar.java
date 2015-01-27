@@ -35,5 +35,9 @@ public class ElevatorCar extends Actor
 	{
 		return this.peopleInside;
 	}
+	
+	public void setNumberOfPeopleInside(int num){
+		this.peopleInside = num;
+	}
 }
 

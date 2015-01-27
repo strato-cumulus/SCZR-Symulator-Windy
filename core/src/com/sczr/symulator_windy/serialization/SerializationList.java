@@ -12,9 +12,9 @@ import model.elevator.state.ElevatorStill;
 import com.esotericsoftware.kryo.Kryo;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
 import com.sczr.symulator_windy.packets.Packet;
-import com.sczr.symulator_windy.packets.GUIpackets.ElevatorStateInfoPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.InitializeGUIPacket;
+import com.sczr.symulator_windy.packets.GUIpackets.ModelStateInfoPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ChangeDestinationFloorPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
@@ -33,7 +33,7 @@ public class SerializationList
 
 		kryo.register(ElevatorCallPacket.class);
 
-		kryo.register(ElevatorStateInfoPacket.class);
+		kryo.register(ModelStateInfoPacket.class);
 
 		kryo.register(ElevatorCallPacket.class);
 
@@ -52,5 +52,6 @@ public class SerializationList
 		kryo.register(DoorOpening.class);
 		kryo.register(DoorStill.class);
 		kryo.register(Integer.class);
+		kryo.register(int[].class);
 	}
 }

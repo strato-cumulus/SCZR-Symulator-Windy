@@ -3,6 +3,7 @@ package model.elevator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import model.Model;
 import model.elevator.state.DoorStill;
@@ -31,7 +32,7 @@ public class ElevatorCarModel{
 	public State elevatorState;
 	public State previousElevatorState;
 	
-	final ArrayList<Passenger> passengersInCar;
+	final CopyOnWriteArrayList<Passenger> passengersInCar;
 	private StateMachine stateMachine;
 	
 	public ElevatorCarModel() {
@@ -39,7 +40,7 @@ public class ElevatorCarModel{
 		this.stateMachine = new StateMachine(this);
 		this.doorState = new DoorStill();
 		this.elevatorState = new ElevatorGoingUp();
-		this.passengersInCar = new ArrayList<>();
+		this.passengersInCar = new CopyOnWriteArrayList<>();
 
 	}
 	
@@ -104,6 +105,7 @@ public class ElevatorCarModel{
 		for (Passenger passenger : passengersInCar) {
 			destinations.add(passenger.getDestination());
 		}
+		//TODO musi do tej listy bycdodawna tez lista szystkich pieter na ktorych czekaja jacys pasazerowie
 		return new ArrayList<>(destinations);
 	}
 

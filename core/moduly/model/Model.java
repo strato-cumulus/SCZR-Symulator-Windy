@@ -13,9 +13,9 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.sczr.symulator_windy.exception.ElevatorStateException;
 import com.sczr.symulator_windy.packets.ElevatorCallPacket;
-import com.sczr.symulator_windy.packets.GUIpackets.ElevatorStateInfoPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.GUIRegisterPacket;
 import com.sczr.symulator_windy.packets.GUIpackets.InitializeGUIPacket;
+import com.sczr.symulator_windy.packets.GUIpackets.ModelStateInfoPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ChangeDestinationFloorPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
@@ -84,7 +84,6 @@ public class Model{
 					System.out.println("rejestracja gui");
 					c.sendTCP(new InitializeGUIPacket(NUMBER_OF_FLOORS, FLOOR_HEIGHT, ElevatorCarModel.ELEVATOR_WIDTH));
 				}
-				//else if(o instanceof ElevatorCa)
 
 			}
 			
@@ -110,8 +109,12 @@ public class Model{
 			
 			@Override
 			public void run() {
+				int[] peopleWating = new int[Model.NUMBER_OF_FLOORS];
+				for (int i=0; i<floors.length; i++) {
+					peopleWating[i] = floors[i].numberOfWaitingPassengers();
+				}
 				server.sendToTCP(guiConnectionId, 
-						new ElevatorStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentVericalPosition()));
+						new ModelStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentVericalPosition(), peopleWating, elevatorCar.getNumberOfPeopleInside()));
 			}
 		}, 0, GUI_REFRESH_RATE);
         
@@ -124,7 +127,8 @@ public class Model{
 								getDownButtonsClicked(), 
 								elevatorCar.checkFloor(), 
 								elevatorCar.getPassangerDestinations(), 
-								elevatorCar.elevatorState));
+								elevatorCar.elevatorState,
+								elevatorCar.previousElevatorState));
 			}
 		}, 0, CONTROLLER_REFRESH_INTERVAL);
 		

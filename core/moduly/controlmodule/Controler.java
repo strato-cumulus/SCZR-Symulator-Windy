@@ -6,7 +6,6 @@ import java.util.List;
 
 import model.elevator.state.ElevatorGoingDown;
 import model.elevator.state.ElevatorGoingUp;
-import model.elevator.state.ElevatorStill;
 import model.elevator.state.State;
 
 import com.esotericsoftware.kryonet.Client;
@@ -65,49 +64,88 @@ public class Controler
 	
 	private ChangeDestinationFloorPacket handleElevator(ElevatorStatePacket packet)
 	{
-		int nextFloorToStop = -1;
-		State elevatorState = packet.getElevatorState();
+		int nextFloorToStop = -10;
+		State currentElevatorState = packet.getCurrentElevatorState();
+		State prevElevatorState = packet.getPrevElevatorState();
 		ArrayList<Integer> upButtons = packet.getUpButtons();
 		ArrayList<Integer> downButtons = packet.getDownButtons();
 		List<Integer> passengersDestinations = packet.getDestinations();
 		int currentFloor = packet.getCurrentFloor();
 		
-		if(downButtons.size()+passengersDestinations.size()==0)
+		if(downButtons.size()+upButtons.size()+passengersDestinations.size()==0)
 			return new ChangeDestinationFloorPacket(currentFloor);
 		
-		if(elevatorState instanceof ElevatorStill)
-		{
-	
-		}
-		else if(elevatorState instanceof ElevatorGoingDown){
-			int currentMaximum =-1;
-			for (Integer integer : downButtons) {
-				if(integer>currentMaximum && integer <= currentFloor){
-					currentMaximum = integer;
-				}
-			}
-			for (Integer integer : passengersDestinations) {
-				if(integer>currentMaximum && integer <= currentFloor){
-					currentMaximum = integer;
-				}
-			}
-			nextFloorToStop = currentMaximum;
-		}
-		else if(elevatorState instanceof ElevatorGoingUp){
-			int currentMinimum = Integer.MAX_VALUE;
-			for (Integer integer : upButtons) {
-				if(integer<currentMinimum && integer > currentFloor){
-					currentMinimum = integer;
-				}
-			}
-			for (Integer integer : passengersDestinations) {
-				if(integer<currentMinimum && integer > currentFloor){
-					currentMinimum = integer;
-				}
-			}
-			nextFloorToStop = currentMinimum;
-		}
 		
+		/*
+		if(currentElevatorState instanceof ElevatorStill){
+			if(currentFloor == Model.NUMBER_OF_FLOORS - 1){
+				nextFloorToStop = Model.NUMBER_OF_FLOORS-2;
+			}
+			else if(currentFloor== 0){
+				nextFloorToStop = 1;
+				elevatorState = new ElevatorGoingUp();
+				return new ElevatorGoingUp();
+			}
+			else{
+				if(previousElevatorState instanceof ElevatorGoingUp){
+					setDestinationFloor(getDestinationFloor()+1);
+				}
+				else if(previousElevatorState instanceof ElevatorGoingDown){
+					setDestinationFloor(getDestinationFloor()-1);
+				}
+				elevatorState = previousElevatorState;
+				return elevatorState;
+			}
+		
+		}*/
+		int maxOfStoreysBelowFloor =-1;
+		int minOfStoreysAboveCar = Integer.MAX_VALUE;
+		
+		for (Integer integer : downButtons) {
+			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
+				maxOfStoreysBelowFloor = integer;
+			}
+		}
+		for (Integer integer : passengersDestinations) {
+			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
+				maxOfStoreysBelowFloor = integer;
+			}
+		}
+			
+		for (Integer integer : upButtons) {
+			if(integer<minOfStoreysAboveCar && integer > currentFloor){
+				minOfStoreysAboveCar = integer;
+			}
+		}
+		for (Integer integer : passengersDestinations) {
+			if(integer<minOfStoreysAboveCar && integer > currentFloor){
+				minOfStoreysAboveCar = integer;
+			}
+		}
+			
+		if(prevElevatorState instanceof ElevatorGoingUp){
+			nextFloorToStop = minOfStoreysAboveCar;
+		}
+		else if(prevElevatorState instanceof ElevatorGoingDown){
+			nextFloorToStop = maxOfStoreysBelowFloor;
+		}
+		else{
+			try {
+				throw new Exception("kod mial tu nie dojsc");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(nextFloorToStop == -1 || nextFloorToStop == Integer.MAX_VALUE){
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("dest:" + nextFloorToStop);
 		return new ChangeDestinationFloorPacket(nextFloorToStop);
 	}
 }

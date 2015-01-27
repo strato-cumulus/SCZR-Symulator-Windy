@@ -64,6 +64,8 @@ public class StateMachine
 		if(elevatorCar.checkFloor() >= destination) {
 			System.out.println("Arrived on floor " + destination);
 			elevatorCar.setY((elevatorCar.checkFloor()) * Model.FLOOR_HEIGHT);
+			elevatorCar.allowPassengersToLeave(destination);
+			elevatorCar.allowPassengersToEnter(destination);
 			elevatorCar.elevatorState = new ElevatorStill();
 			Thread.sleep(300);
 			return new ElevatorStill();
@@ -75,11 +77,23 @@ public class StateMachine
 	
 	State nextState(ElevatorStill state, float delta){
 		if(Model.isControllerConnected == true){
-			if(elevatorCar.checkFloor() > elevatorCar.getDestinationFloor())
+			if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()){
+				elevatorCar.elevatorState = new ElevatorGoingDown();
 				return new ElevatorGoingDown();
-			else if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor())
+			}
+			else if(elevatorCar.checkFloor() < elevatorCar.getDestinationFloor()){
+				elevatorCar.elevatorState = new ElevatorGoingUp();
 				return new ElevatorGoingUp();
-			else return state;
+			}
+			else{
+				try {
+					//throw new Exception("kod tu ma nie dojsc");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return state;
+			}
 		}
 		//WERSJA GLUPIA
 		else{	

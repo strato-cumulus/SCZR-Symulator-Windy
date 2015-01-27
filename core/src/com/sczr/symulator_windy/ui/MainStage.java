@@ -42,7 +42,7 @@ public class MainStage extends Stage
 	Label storeyLabels[];
 	Table mainTable;
 	Label peopleInsideLabel;
-	PositionUpdateListener listener;
+	ModelUpdatesListener listener;
 
 	/*************************************************************************| 
 	|
@@ -84,7 +84,7 @@ public class MainStage extends Stage
 		
 		this.elevator = new ElevatorCar(ElevatorCarModel.ELEVATOR_WIDTH, Model.FLOOR_HEIGHT, ELEVATOR_X);
 		addActor(elevator);
-		this.listener = new PositionUpdateListener(elevator);
+		this.listener = new ModelUpdatesListener(elevator,this);
 		//client.addListener(listener);
 		
 		for(int i=0; i<stories; i++){
@@ -199,7 +199,7 @@ public class MainStage extends Stage
 			e.getMessage();
 		}
 		
-		peopleInsideLabel.setText("osoby w srodku windy: " + elevator.getNumberOfPeopleInside());
+		updatePeopleInsideLabel();
 		for(int i=0; i<stories; i++){
 			storeyLabels[i].setText("liczba oczekujacych: " + peopleWaitingOnStorey[i]);
 		}
@@ -237,5 +237,8 @@ public class MainStage extends Stage
 			System.out.println("Sending call from floor " + this.story + " to floor " + randomValue);
 			//uiModule.client.sendTCP(new ElevatorCallPacket(story, random.nextInt()));
 		}
-	}	
+	}
+	public void updatePeopleInsideLabel(){
+		peopleInsideLabel.setText("osoby w srodku windy: " + elevator.getNumberOfPeopleInside());
+	}
 }
