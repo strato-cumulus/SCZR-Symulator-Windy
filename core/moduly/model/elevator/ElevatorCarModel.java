@@ -24,7 +24,7 @@ public class ElevatorCarModel{
 	public final float MAX_PASSENGERS = 5;
 
 	private int destinationFloor = 9;
-	private float currentVerticalPosition = 361;
+	public float currentVerticalPosition = 361;
 	private float currentDoorWidth = ELEVATOR_WIDTH;
 	private SendPacketInterface sender;
 	
@@ -45,11 +45,7 @@ public class ElevatorCarModel{
 		this.sender = sender;
 	}
 	
-	public void actElevator(float delta) throws ElevatorStateException{
-		/*if(!elevatorState.getClass().equals(ElevatorStill.class) && !doorState.getClass().equals(DoorStill.class)) {
-			throw new ElevatorStateException();
-		}*/
-	
+	public void actElevator(float delta) throws ElevatorStateException{	
 		this.doorState.accept(this.stateMachine, delta);
 		this.elevatorState.accept(this.stateMachine, delta);
 	}
@@ -64,17 +60,6 @@ public class ElevatorCarModel{
 		return (int)(Math.floor(this.getCurrentVericalPosition() / Model.FLOOR_HEIGHT));
 	}
 	
-	public void dispatch(int callFloor, int destinationFloor)
-	{
-		this.setDestinationFloor(callFloor);
-		if(callFloor > this.checkFloor()) {
-			this.elevatorState = new ElevatorGoingUp();
-		}
-		else {
-			this.elevatorState = new ElevatorGoingDown();
-		}
-	}
-
 	
 	public void exit(Passenger passenger){
 		passengersInCar.remove(passenger);
@@ -106,7 +91,6 @@ public class ElevatorCarModel{
 		for (Passenger passenger : passengersInCar) {
 			destinations.add(passenger.getDestination());
 		}
-		//TODO musi do tej listy bycdodawna tez lista szystkich pieter na ktorych czekaja jacys pasazerowie
 		return new ArrayList<>(destinations);
 	}
 
@@ -133,32 +117,16 @@ public class ElevatorCarModel{
 	 */
 	public void allowPassengersToEnter(int floor){
 		while(getNumberOfPeopleInside() < MAX_PASSENGERS){
-			//Passenger p = null;
-			/*if(this.currentVerticalPosition == Model.FLOOR_HEIGHT*Model.NUMBER_OF_FLOORS-1)
-			{
-				
-			}*/
+
 			Passenger p = Model.floors[floor].getInPassenger();
-		/*	if(previousElevatorState instanceof ElevatorGoingUp)
-			{
-				if(destinationFloor < floor)
-					p = Model.floors[floor].getInPassengerDown();
-				else
-					p = Model.floors[floor].getInPassengerUp();
-			}
-			if(previousElevatorState instanceof ElevatorGoingDown)
-			{
-				if(destinationFloor > floor)
-					p = Model.floors[floor].getInPassengerUp();
-				else
-					p = Model.floors[floor].getInPassengerDown();*/
 			
 			if(p == null){
 				return;
 			}
-			System.out.println("Do windy wchodzi" + p.getID());
+			System.out.println("Do windy wchodzi: " + p.getID() +", Jedzie z" + p.getFloor() +  "na: " + p.getDestination());
 			passengersInCar.add(p);
 			sender.sendPacket(new PassengerEnterPacket(p.getID(), p.getFloor(), p.getDestination()));
+			Model.incrementCounter();
 		}
 	}
 	
@@ -171,6 +139,7 @@ public class ElevatorCarModel{
 			if(passenger.getDestination() == floor){
 				System.out.println("Z windy wychodzi: " + passenger.getID());
 				passengersInCar.remove(passenger);
+				Model.incrementCounter();
 			}
 		}
 	}

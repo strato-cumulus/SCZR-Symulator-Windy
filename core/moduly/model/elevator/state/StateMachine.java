@@ -46,12 +46,10 @@ public class StateMachine
 		int destination = elevatorCar.getDestinationFloor();
 		
 		if(elevatorCar.checkFloor() < destination) {
-			System.out.println("Arrived on floor " + destination);
-			elevatorCar.setY((elevatorCar.getDestinationFloor()) * Model.FLOOR_HEIGHT);
-			elevatorCar.allowPassengersToLeave(destination);
-			elevatorCar.allowPassengersToEnter(destination);
+			elevatorCar.setY((elevatorCar.checkFloor()+1) * Model.FLOOR_HEIGHT);
+			elevatorCar.allowPassengersToLeave(elevatorCar.checkFloor());
+			elevatorCar.allowPassengersToEnter(elevatorCar.checkFloor());
 			elevatorCar.elevatorState = new ElevatorStill();
-			Thread.sleep(300);
 			return new ElevatorStill();
 		}
 		elevatorCar.previousElevatorState = state;
@@ -62,12 +60,10 @@ public class StateMachine
 	State nextState(ElevatorGoingUp state, float delta) throws InterruptedException{
 		int destination = elevatorCar.getDestinationFloor();
 		if(elevatorCar.checkFloor() >= destination) {
-			System.out.println("Arrived on floor " + destination);
 			elevatorCar.setY((elevatorCar.checkFloor()) * Model.FLOOR_HEIGHT);
-			elevatorCar.allowPassengersToLeave(destination);
-			elevatorCar.allowPassengersToEnter(destination);
+			elevatorCar.allowPassengersToLeave(elevatorCar.checkFloor());
+			elevatorCar.allowPassengersToEnter(elevatorCar.checkFloor());
 			elevatorCar.elevatorState = new ElevatorStill();
-			Thread.sleep(300);
 			return new ElevatorStill();
 		}
 		elevatorCar.previousElevatorState = state;
@@ -78,13 +74,7 @@ public class StateMachine
 	State nextState(ElevatorStill state, float delta){
 		if(Model.isControllerConnected == true){
 			
-			
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+
 			if(elevatorCar.checkFloor() >= elevatorCar.getDestinationFloor()){
 				elevatorCar.elevatorState = new ElevatorGoingDown();
 				return new ElevatorGoingDown();
@@ -103,7 +93,8 @@ public class StateMachine
 				return state;
 			}
 		}
-		//WERSJA GLUPIA
+		
+		//Ruch windy bez sterowania
 		else{	
 			if(elevatorCar.checkFloor() == Model.NUMBER_OF_FLOORS - 1){
 				elevatorCar.setDestinationFloor(Model.NUMBER_OF_FLOORS - 2);

@@ -16,6 +16,7 @@ import com.sczr.symulator_windy.packets.controllerpackets.ChangeDestinationFloor
 import com.sczr.symulator_windy.packets.controllerpackets.ControllerRegisterPacket;
 import com.sczr.symulator_windy.packets.controllerpackets.ElevatorStatePacket;
 import com.sczr.symulator_windy.serialization.SerializationList;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class Controler 
 {
@@ -30,6 +31,7 @@ public class Controler
 	    	@Override
 	    	public void connected(Connection c){
 	    		c.sendTCP(new ControllerRegisterPacket());
+	    		c.sendTCP(new ChangeDestinationFloorPacket(0));
 	    	}
 	    	
 	        @Override
@@ -66,141 +68,55 @@ public class Controler
 		int nextFloorToStop = -10;
 		State currentElevatorState = packet.getCurrentElevatorState();
 		State prevElevatorState = packet.getPrevElevatorState();
-		ArrayList<Integer> upButtons = packet.getUpButtons();
-		ArrayList<Integer> downButtons = packet.getDownButtons();
+		ArrayList<Integer> floorsCalls = packet.getUpButtons();
 		List<Integer> passengersDestinations = packet.getDestinations();
 		int currentFloor = packet.getCurrentFloor();
 		ArrayList<Integer> allCalls = new ArrayList<Integer>();
 		
-		if(upButtons.size()+passengersDestinations.size()==0)
-			return new ChangeDestinationFloorPacket(0);
+		if(floorsCalls.size()+passengersDestinations.size()==0)
+			return new ChangeDestinationFloorPacket(currentFloor);
 		
-
-
-		/*
-		if(currentElevatorState instanceof ElevatorStill){
-			if(currentFloor == Model.NUMBER_OF_FLOORS - 1){
-				nextFloorToStop = Model.NUMBER_OF_FLOORS-2;
-			}
-			else if(currentFloor== 0){
-				nextFloorToStop = 1;
-				elevatorState = new ElevatorGoingUp();
-				return new ElevatorGoingUp();
-			}
-			else{
-				if(previousElevatorState instanceof ElevatorGoingUp){
-					setDestinationFloor(getDestinationFloor()+1);
-				}
-				else if(previousElevatorState instanceof ElevatorGoingDown){
-					setDestinationFloor(getDestinationFloor()-1);
-				}
-				elevatorState = previousElevatorState;
-				return elevatorState;
-			}
-		}*/
-		
-		
-		//int maxOfStoreysBelowFloor =-10;
-		//int minOfStoreysAboveCar = Integer.MAX_VALUE;
-		
-		//allCalls.addAll(passengersDestinations
-		//allCalls.addAll(upButtons);
-		//allCalls.addAll(downButtons);
 		
 		for (Integer integer : passengersDestinations) {
 			allCalls.add(integer);
 		}
 		
-		for (Integer integer : upButtons) {
+		for (Integer integer : floorsCalls) {
 			allCalls.add(integer);
 		}
 		
 
 		int maxLess = -1;
 		for(int floor: allCalls) {
-			if(floor <= packet.getCurrentFloor() && floor >= maxLess) {
+			if(floor < packet.getCurrentFloor() && floor > maxLess) {
 				maxLess = floor;
 			}
 		}
 		
 		int minBigger = 10;
 		for(int floor: allCalls) {
-			if(floor >= packet.getCurrentFloor() && floor <= minBigger) {
+			if(floor > packet.getCurrentFloor() && floor < minBigger) {
 				minBigger = floor;
 			}
 		}
 		
-		/*for (Integer integer : downButtons) {
-			allCalls.add(integer);
-		}*/
 		
-		if(allCalls.size() == 0)
-			System.out.println("dupa");
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//System.out.println(currentFloor);
-/*
-		for (Integer integer : allCalls) {
-			if(integer>maxOfStoreysBelowFloor && integer <= currentFloor){
-				maxOfStoreysBelowFloor = integer;
-			}
-		}
-			
-
-		for (Integer integer : allCalls) {
-			if(integer<minOfStoreysAboveCar && integer > currentFloor){
-				minOfStoreysAboveCar = integer;
-			}
-		}
-			*/
-		if(prevElevatorState instanceof ElevatorGoingUp){
-			nextFloorToStop = minBigger/*minOfStoreysAboveCar*/;
+		if(prevElevatorState instanceof ElevatorGoingUp)
+		{
+			if(minBigger >= 10)
+				nextFloorToStop = maxLess;
+			else 
+				nextFloorToStop = minBigger;
 		}
 		else if(prevElevatorState instanceof ElevatorGoingDown){
-			nextFloorToStop = maxLess/*maxOfStoreysBelowFloor*/;
+			
+			if(maxLess <= -1)
+				nextFloorToStop = minBigger;
+			else 
+				nextFloorToStop = maxLess;
 		}
-		else{
-			try {
-				throw new Exception("kod mial tu nie dojsc");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		if(nextFloorToStop == -1 || nextFloorToStop == Integer.MAX_VALUE){
-			try {
-				//throw new Exception();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		/*for (Integer integer : allCalls) {
-			System.out.println(integer);
-		}*/
-		//System.out.println("dest:" + nextFloorToStop);
-	//	System.out.println("AllCalls: " +allCalls.size());
-	//	System.out.println("Dest: " + nextFloorToStop);
-		
-		if(nextFloorToStop <= -1) 
-		{
-			nextFloorToStop = minBigger;
-		}
-		else if(nextFloorToStop >= 10)
-		{
-			nextFloorToStop = maxLess;
-		}
+
 		return new ChangeDestinationFloorPacket(nextFloorToStop);
 	}
+
 }

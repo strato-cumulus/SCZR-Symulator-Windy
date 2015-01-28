@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import model.elevator.ElevatorCarModel;
 import model.elevator.SendPacketInterface;
+import model.elevator.state.ElevatorStill;
 import passengersmodule.Passenger;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -32,7 +33,7 @@ public class Model implements SendPacketInterface
 {
 	public static final int NUMBER_OF_FLOORS = 10;
 	public static final int FLOOR_HEIGHT = 60;
-	public static final int GUI_REFRESH_RATE = 100;
+	public static final int GUI_REFRESH_RATE = 30;
 	public static final int CONTROLLER_REFRESH_INTERVAL = 15;
 	public static final int MODEL_REFRESH_RATE = 25;
 
@@ -44,8 +45,8 @@ public class Model implements SendPacketInterface
 	private int controllerConnectionId = -1;
 	public static boolean isControllerConnected = false;
 	
-	//private boolean[] upButtons = new boolean[NUMBER_OF_FLOORS-1];
-	//private boolean[] downButtons = new boolean[NUMBER_OF_FLOORS-1];
+	private int prevCounter = 0;
+	private static int counter = 0;
 	
 	
 	public Model(int tcpPort) throws IOException{
@@ -68,8 +69,7 @@ public class Model implements SendPacketInterface
 				else if(o instanceof NewPassengerPacket){
 					NewPassengerPacket p = (NewPassengerPacket)o;
 						floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination, p.floor));
-							
-					//server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
+						counter++;
 					System.out.println("dodano nowego pasazera");
 				}				
 				//modul sterowania
@@ -118,22 +118,52 @@ public class Model implements SendPacketInterface
 				for (int i=0; i<floors.length; i++) {
 					peopleWating[i] = floors[i].numberOfWaitingPassengers();
 				}
+				if(elevatorCar.elevatorState instanceof ElevatorStill)
+				{
+					if(isControllerConnected == true && number() > 0){
+						try 
+						{
+							Thread.sleep(200);
+						} catch (InterruptedException e) 
+						{
+							e.printStackTrace();
+						}
+					}
+					if(isControllerConnected == false)
+					{
+						try 
+						{
+							Thread.sleep(200);
+						} catch (InterruptedException e) 
+						{
+							e.printStackTrace();
+						}
+					}
+				}
 				server.sendToTCP(guiConnectionId, 
-						new ModelStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentVericalPosition(), peopleWating, elevatorCar.getNumberOfPeopleInside()));
+						new ModelStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentVericalPosition(),
+								peopleWating, elevatorCar.getNumberOfPeopleInside(), elevatorCar.elevatorState));
+
 			}
 		}, 0, GUI_REFRESH_RATE);
         
         timer.scheduleAtFixedRate(new TimerTask() {
 			
 			@Override
-			public void run() {
-				server.sendToTCP(controllerConnectionId, 
-						new ElevatorStatePacket(getUpButtonsClicked(), 
-								/*getDownButtonsClicked(), */
-								elevatorCar.checkFloor(), 
-								elevatorCar.getPassangerDestinations(), 
-								elevatorCar.elevatorState,
-								elevatorCar.previousElevatorState));
+			public void run() 
+			{
+				if(prevCounter != counter)
+				{
+					prevCounter = counter;
+					server.sendToTCP(controllerConnectionId, 
+							new ElevatorStatePacket(getUpButtonsClicked(), 
+									elevatorCar.checkFloor(), 
+									elevatorCar.getPassangerDestinations(), 
+									elevatorCar.elevatorState,
+									elevatorCar.previousElevatorState));
+				}
+				
+				
 			}
 		}, 0, CONTROLLER_REFRESH_INTERVAL);
 		
@@ -159,16 +189,7 @@ public class Model implements SendPacketInterface
 		}
 		return clicked;
 	}
-/*	
-	private ArrayList<Integer> getDownButtonsClicked(){
-		ArrayList<Integer> clicked = new ArrayList<>();
-		for (Floor floor : floors) {
-			for (Passenger passenger : floor.waitingPassengersDown) {
-				clicked.add(passenger.getFloor());
-			}
-		}
-		return clicked;
-	}*/
+
 	
 	public Floor[] getFloors(){
 		return floors;
@@ -185,13 +206,29 @@ public class Model implements SendPacketInterface
 			e.printStackTrace(); 
 			System.exit(1);
 		}
-		System.out.println("...GÓRAL...");
+		System.out.println("Winda uruchomiona!");
 		
 	}
 
 	@Override
 	public void sendPacket(Packet packet) {
 		this.server.sendToAllTCP(packet);
+	}
+	
+	public static void incrementCounter()
+	{
+		counter++;
+	}
+	
+	private int number()
+	{
+		int number = 0;
+		for (Floor floor : floors) 
+		{
+			number += floor.numberOfWaitingPassengers();
+		}
+		number+= elevatorCar.getNumberOfPeopleInside();
+		return number;
 	}
 
 }

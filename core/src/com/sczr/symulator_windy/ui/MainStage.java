@@ -112,7 +112,13 @@ public class MainStage extends Stage
 				public void clicked(InputEvent event, float x, float y){
 					Random random = new Random();
 					//peopleWaitingOnStorey[Integer.parseInt(event.getListenerActor().getName())]+=1;
-					client.sendTCP(new NewPassengerPacket(lastClientID++, Math.abs(random.nextInt() % stories), Integer.parseInt(event.getListenerActor().getName())));
+					int dest = Math.abs(random.nextInt() % stories);
+					while(dest == Integer.parseInt(event.getListenerActor().getName()))
+					{
+						dest = Math.abs(random.nextInt() % stories);
+					}
+					client.sendTCP(new NewPassengerPacket(lastClientID++, dest, Integer.parseInt(event.getListenerActor().getName())));
+					Model.incrementCounter();
 				}
 			});
 		}
