@@ -2,6 +2,7 @@ package model.elevator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -110,6 +111,11 @@ public class ElevatorCarModel{
 		currentVerticalPosition = f;
 	}
 	
+	public List<Passenger> getPassengers()
+	{
+		return passengersInCar;
+	}
+	
 	
 	/**
 	 * pakuje do windy pasazerow z podanej podlogi. robi to tak dlugo, az zapelni winde
@@ -123,8 +129,14 @@ public class ElevatorCarModel{
 			if(p == null){
 				return;
 			}
-			System.out.println("Do windy wchodzi: " + p.getID() +", Jedzie z" + p.getFloor() +  "na: " + p.getDestination());
+			System.out.println("Do windy wchodzi: " + p.getID() +", Jedzie z " + p.getFloor() +  " na: " + p.getDestination());
 			passengersInCar.add(p);
+			System.out.println("Pasazerowie: ");
+			for (Passenger passenger1 : passengersInCar) 
+			{
+				System.out.println("ID: " + passenger1.getID() + ", cel: " + passenger1.getDestination());
+			}
+			System.out.println("*********************");
 			sender.sendPacket(new PassengerEnterPacket(p.getID(), p.getFloor(), p.getDestination()));
 			Model.incrementCounter();
 		}
@@ -139,6 +151,12 @@ public class ElevatorCarModel{
 			if(passenger.getDestination() == floor){
 				System.out.println("Z windy wychodzi: " + passenger.getID());
 				passengersInCar.remove(passenger);
+				System.out.println("Pasazerowie: ");
+				for (Passenger passenger1 : passengersInCar) 
+				{
+					System.out.println("ID: " + passenger1.getID() + ", cel: " + passenger1.getDestination());
+				}
+				System.out.println("*********************");
 				Model.incrementCounter();
 			}
 		}

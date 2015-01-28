@@ -13,7 +13,7 @@ public class ControlModule
 		adress = "127.0.0.1";
 		port = 1234;
 		Controler controler = new Controler(port, adress);
-		System.out.println("ControlModule elo");
+		System.out.println("Kontroler windy dziala");
 		while(true);
 	}
 }

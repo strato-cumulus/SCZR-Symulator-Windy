@@ -69,6 +69,7 @@ public class Model implements SendPacketInterface
 				else if(o instanceof NewPassengerPacket){
 					NewPassengerPacket p = (NewPassengerPacket)o;
 						floors[p.floor].addWaitingPassenger(new Passenger(p.ID, p.destination, p.floor));
+						server.sendToAllTCP(new NewPassengerPacket(p.ID, p.destination, p.floor));
 						counter++;
 					System.out.println("dodano nowego pasazera");
 				}				
@@ -140,6 +141,8 @@ public class Model implements SendPacketInterface
 						}
 					}
 				}
+				//System.out.flush();
+
 				server.sendToTCP(guiConnectionId, 
 						new ModelStateInfoPacket(elevatorCar.getCurrentDoorWidth(), elevatorCar.getCurrentVericalPosition(),
 								peopleWating, elevatorCar.getNumberOfPeopleInside(), elevatorCar.elevatorState));
